@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<title>voidblossom :: svg text glow</title>
+	
+	<script src="js/vendor/jquery-2.0.0.min.js"></script>
+	<script src="js/vendor/raphael-min.js"></script>
+
+	<script type="text/javascript">
+function drawpath( canvas, pathstr, duration, attr, callback )
+{
+	var guide_path = canvas.path( pathstr ).attr( { stroke: "none", fill: "none" } );
+	var path = canvas.path( guide_path.getSubpath( 0, 1 ) ).attr( attr );
+	var total_length = guide_path.getTotalLength( guide_path );
+	var last_point = guide_path.getPointAtLength( 0 );
+	var start_time = new Date().getTime();
+	var interval_length = 50;
+	var result = path;        
+
+	var interval_id = setInterval( function()
+	{
+		var elapsed_time = new Date().getTime() - start_time;
+		var this_length = elapsed_time / duration * total_length;
+		var subpathstr = guide_path.getSubpath( 0, this_length );            
+		attr.path = subpathstr;
+
+		path.animate( attr, interval_length );
+		if ( elapsed_time >= duration )
+		{
+			clearInterval( interval_id );
+			if ( callback != undefined ) callback();
+			guide_path.remove();
+		}                                       
+	}, interval_length );  
+	return result;
+}
+
+
+$(window).ready( function()
+{
+	var paper = Raphael( document.getElementById('body-container'), $("#body-container").width(), $("#body-container").height() );
+	var width = $("#body-container").width(), height = $("#body-container").height();
+
+	function generateInterpolatedPath( paper, points, show_control_points )
+	{
+		var path_sequence = [];
+		path_sequence.push( "M", points[0].x, points[0].y );
+		path_sequence.push( "R" );
+		show_control_points && paper.circle( points[0].x, points[0].y, 5 ).attr( { fill: 'black' } ).animate( { opacity: 0 }, 30000, function() { this.remove(); } );
+
+		for ( var i = 1; i < points.length; i++ )
+		{
+			path_sequence.push( points[i].x, points[i].y );
+			show_control_points && paper.circle( points[i].x, points[i].y, 5 ).attr( { fill: 'black' } ).animate( { opacity: 0 }, 30000, function() { this.remove(); } );
+		}
+		return path_sequence;
+	}
+
+	var points = 
+	[
+		{ x: 260, y: 60 },
+		{ x: 140, y: 120 },
+		{ x: 50, y: 200 },
+		{ x: 110, y: 280 },
+		{ x: 140, y: 370 },
+		{ x: 50, y: 400 }
+	];
+
+	var first = true;
+
+	var drawRoutine = function()
+		{
+			var pathstr = generateInterpolatedPath( paper, points, first );
+			first = false;
+
+			var gpath = paper.path( pathstr ).attr( { stroke: 'gray', 'stroke-width': 0.5, fill: 'none' } );
+			var dpath = drawpath( paper, pathstr, 4000, { stroke: 'black', fill: 'none', 'fill-opacity': 0, 'stroke-width': 3 }, function()
+				{
+					setTimeout( function()
+						{
+							var t = Math.random() * Math.PI * 2;
+							var ix = Math.random() * width, iy = Math.random() * height;
+							var point_count = 5 + Math.random() * 12;
+							points = [];
+							points.push( { x: ix, y: iy } );
+							for ( var i = 0; i < point_count; i++ )
+							{
+								t = t + Math.PI * -0.25 + Math.random() * Math.PI * 0.5;
+								var cx = ix + Math.cos( t ) * ( 40 + Math.random() * 40 );
+								var cy = iy + Math.sin( t ) * ( 40 + Math.random() * 40 );
+								if ( cx > 0 && cy > 0 && cx < width && cy < height )
+								{
+									ix = cx;
+									iy = cy;
+									points.push( { x: ix, y: iy } );
+								}
+								else
+									point_count++;
+							}
+							gpath.remove();
+							dpath.animate( { opacity: 0 }, 10000, function()
+								{
+									this.remove();
+								} );
+							drawRoutine();
+						}, 2000 );
+				} );
+		}
+
+	drawRoutine();
+
+} );
+	</script>
+  </head>
+  <body style="border: 10px;">
+	<div style="margin:20px auto 20px;position:relative;" id="body-wrapper">
+		<div id="body-container" style="min-height:800px;">
+			<div id="content" style="position:relative;top:0;left:0;">
+			</div>
+		</div>
+	</div>
+  </body>
+</html>
