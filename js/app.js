@@ -24,6 +24,8 @@ MM.init = function(el, events, fleet) {
 	//-- Create routes
 	MM.routes = MM.map(MM.fleet);
 	
+	MM.timeline($("#timeline"), 5);
+	
 	MM.start();
 	
 	MM.menu($("#menu"));
@@ -33,6 +35,30 @@ MM.init = function(el, events, fleet) {
 	
 }
 
+MM.timeline = function($el, num_ticks) {
+	var num_ticks = num_ticks || 3,
+		start_year = MM.events[0].y, //-- First event
+		end_year = MM.events[MM.events.length-1].y, //-- Last event
+		timeSpan = end_year - start_year,
+		timeStep = timeSpan / (num_ticks-1),
+		offset = 20, //- offset
+		pxStep = Math.floor((MM.width - offset ) / num_ticks),
+		ticks = []; //-- pixel change per year
+	
+	
+	ticks.push($("<li>"+start_year+"</li>").css("left", offset));
+
+	for ( var i = 1; i <= num_ticks-2; i++ ) {
+		var tick = $("<li>"+Math.round(start_year + timeStep * i)+"</li>");
+		tick.css("left", offset + (pxStep * i));
+		ticks.push(tick);
+	}
+	
+	ticks.push($("<li>"+end_year+"</li>").css("left", MM.width - offset - 180));
+	
+	$el.append(ticks);
+
+}
 MM.distributeEvents = function(events) {
 	
 	cleaned = [];
@@ -41,14 +67,27 @@ MM.distributeEvents = function(events) {
 	events.forEach(function(e){
 		//if(e["Use"] != "x") return;
 		
+		if(!e["Image"]) return;
+		
+		var strim = function(s) {
+			r = [];
+			l = s.split(",");
+			l.forEach(function(i){
+				r.push(i.trim());
+			});
+			return r;
+		}
+
 		var item = {
 			"y" : parseInt(e["Year"]),
 			"m" : e["Month"],
 			"d" : e["Day"],
-			"v" : e["Type of Vehicle"].split(","),
+			"v" : strim(e["Type of Vehicle"]),
 			"desc" : e["Event Description"],
-			"img" : "/photos/" + e["Image"]
+			"img" : "/photos/" + e["Image"],
+			"source" : e["Source"]
 		}
+			
 		cleaned.push(item);
 	});
 	
@@ -57,7 +96,7 @@ MM.distributeEvents = function(events) {
 	
 	//-- Split events off into each fleet vehicle
 	events.forEach(function(e){
-
+		
 		e.v.forEach(function(v){
 			MM.fleet[v].events.push(e);
 		});
@@ -84,31 +123,33 @@ MM.map = function(fleet) {
 		start_year = MM.events[0].y, //-- First event
 		end_year = MM.events[num_events-1].y, //-- Last event
 		timeSpan = end_year - start_year,
-		right = 20, //- offset
+		right = 0, //- offset
 		pxStep = Math.floor((MM.width - right ) / timeSpan); //-- pixel change per year
-
 	for (v in MM.fleet) {
+		route = MM.fleet[v];
 		
-		if(!MM.fleet[v].events.length) return;
+		if(!route.events.length) return;
 		
-		MM.fleet[v].path = MM.plot(MM.fleet[v].events, 
-									MM.fleet[v].s_height,
-									start_year, 
-									pxStep );
+		MM.plot(v, start_year, pxStep );
 		
-		MM.drawRoute(v)
+		MM.drawRoute(v);
+		
 	};
 	
 	return routes;
 }
 
-MM.plot = function(events, s_height, start_year, pxStep, color) {
-	var points = [],
+MM.plot = function(v, start_year, pxStep) {
+	var route = MM.fleet[v],
+		events = route.events,
+		s_height = route.s_height,
+		points = [],
 		left = 20, //-- offset
 		height = MM.height - MM.height * (s_height / 100), //-- reverse grid and plot by %
 		path,
 		dir = 0,
-		reset = false;
+		reset = false,
+		stops = {};
 	
 	events.forEach(function(e, i){
 		var p = 0; 
@@ -159,17 +200,21 @@ MM.plot = function(events, s_height, start_year, pxStep, color) {
 		
 		e.point = point;
 		
+		stops[point.x] = i;
+		
 		points.push(point);
 		//log( point )
-		
-		
+		//log(events)
 			
 	});
 
 	
 	path = MM.generateInterpolatedPath( MM.r, points);
 	
+	route.path = path;
 	
+	route.xstops = stops;
+	 
 	return path;
 }
 
@@ -194,9 +239,9 @@ MM.toggleRoute = function(v) {
 		route.glow = route.line.glow(glowSettings);
 		
 		route.stops.forEach(function(stop, i) {
-			setTimeout(function(){
+			//setTimeout(function(){
 				stop.show();
-			}, delay * i);
+		//	}, delay * i);
 		});
 		
 		
@@ -222,13 +267,11 @@ MM.drawRoute = function(v) {
 		stops = [],
 		color = route.color || Raphael.getColor();
 		
-		
 	//-- Draw the line path
 	route.line = MM.r.path( path )
-					.attr( { stroke: color, 'stroke-width': 5, fill: 'none' } )
+					.attr( { stroke: color, 'stroke-width': 6, fill: 'none' } )
 					.hide();
 					
-	
 	
 	
 	if(!events) return;
@@ -237,8 +280,8 @@ MM.drawRoute = function(v) {
 	events.forEach(function(e, i){
 		var t, lock;
 		
-		c = MM.r.circle( e.point.x, e.point.y, 5 )
-			.attr( { fill: "white", stroke: color , 'stroke-width': 3 } )
+		c = MM.r.circle( e.point.x, e.point.y, 7 )
+			.attr( { fill: "white", stroke: color , 'stroke-width': 4 } )
 			.hover(function () {
 		   		if(lock) return;
 		   		lock = true;
@@ -254,11 +297,11 @@ MM.drawRoute = function(v) {
 		   		
 			}, function() { 
 				var that = this;
-				t = setTimeout(function(){
+				t = setTimeout(function(){					
 					that.attr( { fill: "white" } );
 					MM.$tip.hide();
 					lock = false;
-				}, 250);
+				}, 450);
 				
 				
 			} )
@@ -271,16 +314,13 @@ MM.drawRoute = function(v) {
 	route.stops = stops;
 }
 
-MM.travel = function(line) {
-	var dpath = MM.drawpath( MM.r, MM.fleet[line].route, 40000, { stroke: 'white', fill: 'none', 'fill-opacity': 0, 'stroke-width': 4});
-}
 
 MM.tip = function(el, title, type, desc) {
 	var $el = $(el[0]);
 	if(!$el.length) return;
 	
 	//-- set content
-	MM.$tipTxt.html("<h3>"+title+"</h3>"+"<h4>"+type+"</h4>"+"<p>"+desc+"<p>");
+	MM.$tipTxt.html("<h3>"+title+"</h3>"+"<p>"+desc+"<p>");
 	//-- locations of station
 	rect = $el.offset();
 	
@@ -290,6 +330,7 @@ MM.tip = function(el, title, type, desc) {
 	MM.$tip.css("top", rect.top + "px" );
 	
 	MM.$tip.show();
+	
 	//console.log(rect.left, rect.top)
 }
 
@@ -299,10 +340,10 @@ MM.bg = function(url) {
 		MM.$bg = $("#bg");
 	}
 	
-	MM.$bg.fadeOut(function(){
+	MM.$bg.fadeOut(400, function(){
 		
 		MM.$bg.css("background-image", "url("+url+")");	
-		MM.$bg.fadeIn();
+		MM.$bg.fadeIn(800);
 		
 	});	
 	
@@ -365,6 +406,24 @@ MM.generateInterpolatedPath = function( paper, points ) {
 	return path_sequence;
 }
 
+MM.travel = function(line) {
+	var route =  MM.fleet[line];
+	
+	
+	var dpath = MM.drawpath( MM.r, MM.fleet[line].path, MM.width * 100, { stroke: 'white', fill: 'none', 'fill-opacity': 0, 'stroke-width': 4});
+}
+
+
+MM.showStop = function(v, station) {
+	var e = MM.fleet[v].events[station],
+		s = MM.fleet[v].stops[station];
+
+	MM.tip(s, [e.m, e.d+",", e.y].join(" "), e.v, e.desc);
+	
+	MM.bg(e.img);
+	$("#source").html(e.source).attr("href", e.source);
+}
+
 MM.drawpath = function( canvas, pathstr, duration, attr, callback ) {
 	
 	var guide_path = canvas.path( pathstr ).attr( { stroke: "none", fill: "none" } );
@@ -374,13 +433,27 @@ MM.drawpath = function( canvas, pathstr, duration, attr, callback ) {
 	var start_time = new Date().getTime();
 	var interval_length = 50;
 	var result = path;        
-
+	var prevStation = 0;
+	var p = 1000;
+	
+	MM.showStop("Cable Car", 0);
+	
 	var interval_id = setInterval( function()
 	{
 		var elapsed_time = new Date().getTime() - start_time;
 		var this_length = elapsed_time / duration * total_length;
 		var subpathstr = guide_path.getSubpath( 0, this_length );            
 		attr.path = subpathstr;
+		
+		var curr = guide_path.getPointAtLength( this_length );
+		var station = MM.fleet["Cable Car"].xstops[Math.round(curr.x)];
+		//log(MM.fleet["Cable Car"].xstops)
+		if(station && station != prevStation) {
+			console.log("stop", station)
+			MM.showStop("Cable Car", station);
+			
+			prevStation = station;
+		}
 
 		path.animate( attr, interval_length );
 		if ( elapsed_time >= duration )
@@ -398,7 +471,8 @@ MM.start = function() {
 		$intro = $("#intro"),
 		$title = $("#titlecard"),
 		$shape = $("#bgshape"),
-		$menu = $("#menu");
+		$menu = $("#menu"),
+		$timeline = $("#timeline");
 		
 		MM.bg("/photos/misc/intro-light.jpg");
 		
@@ -412,27 +486,30 @@ MM.start = function() {
 			$title.removeClass("show");
 			$shape.removeClass("show");
 			
+			
 			$intro.addClass("closed");
 			$title.addClass("closed");
 			$shape.addClass("closed");
 			
 			$menu.addClass("show");
+			$timeline.addClass("show");
 			
 			setTimeout(function(){
 				f = $menu.find("a")[0];
 				$(f).trigger("click");
 			}, 2800);		
-			//-- Travel down route
-			//MM.travel("Cable Car");
+			
 			
 			e.preventDefault();
 		})
 		
-		$(document).on("keyup", function(e) {
-			if(e.which == 13) {
-				$s.trigger("click");
-			}
-		});
+		setTimeout(function(){
+			$(document).on("keyup", function(e) {
+				if(e.which == 13) {
+					$s.trigger("click");
+				}
+			});
+		}, 1000); //-- wait for page to load to prevent accidental trigger
 }
 
 MM.menu = function($el) {
@@ -448,6 +525,9 @@ MM.menu = function($el) {
 
 			MM.toggleRoute(name);
 			
+			//-- Travel down route
+			if(name == "Cable Car") MM.travel(name);
+			
 			if($this.hasClass("off")) {
 				$this.removeClass("off");
 			}else{
@@ -459,4 +539,14 @@ MM.menu = function($el) {
 		
 		$el.append(b);
 	};
+}
+
+//-- http://jsfiddle.net/rwaldron/j3vST/
+//-- var result = findById( myArray, 45 );
+MM.findById = function(source, id) {
+	return source.filter(function( obj ) {
+		// coerce both obj.id and id to numbers 
+		// for val & type comparison
+		return +obj.id === +id;
+	})[ 0 ];
 }
