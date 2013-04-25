@@ -55,17 +55,13 @@ body {
 
 
 #titlecard {
-  position: absolute;
+/*   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
   padding: 50px;
+   */
   
-  -webkit-transition: -webkit-transform 1.5s 1s;
-  -moz-transition: -moz-transform 1.5s 1s;
-  
-  -webkit-transform: translate(-600px, 0);
-  -moz-transform: translate(-600px, 0);
  
 }
 
@@ -74,15 +70,32 @@ body {
   color: #fff;
   font-size: 80px;
   letter-spacing: 2px;
+  position: absolute;
+  top: 0;
+  left: 50px;
+  -webkit-transition: -webkit-transform 1.5s 1s;
+  -moz-transition: -moz-transform 1.5s 1s;
+  
+  -webkit-transform: translate(-600px, 0);
+  -moz-transform: translate(-600px, 0);
 }
 
 #titlecard h2 {
   font-family: 'Unna', serif;
+  position: absolute;
+  top: 250px;
+  left: 50px;
   
   color: #d1e2e5;
   font-size: 40px;
   width: 250px;
   text-align: right;
+  
+  -webkit-transition: -webkit-transform 1.5s 1.5s;
+  -moz-transition: -moz-transform 1.5s 1.5s;
+  
+  -webkit-transform: translate(-600px, 0);
+  -moz-transform: translate(-600px, 0);
 }
 
 #intro {
@@ -104,7 +117,8 @@ body {
 }
 
 #intro.closed,
-#titlecard.closed,
+#titlecard.closed h1,
+#titlecard.closed h2,
 #bgshape.closed {
   
   -webkit-transition: -webkit-transform 1s .2s;
@@ -112,7 +126,8 @@ body {
 }
 
 #intro.show,
-#titlecard.show,
+#titlecard.show h1,
+#titlecard.show h2,
 #menu.show a {
 
   -webkit-transform: translate(0, 0);
@@ -219,14 +234,80 @@ body {
   background-color: transparent !important;
 }
 
+#timeline {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #000;  
+  margin: 0;
+  height: 26px;
+  padding: 0;
+  
+  -webkit-transition: -webkit-transform 1s;
+  -moz-transition: -moz-transform 1s;
+  
+  -webkit-transform: translate(0, 50px);
+  -moz-transform: translate(0, 50px);
+}
+
+#timeline.show {
+  -webkit-transform: translate(0, 0);
+  -moz-transform: translate(0, 0);
+}
+
+#timeline li {
+  float: left;
+  color: #fff;
+  list-style: none;
+  font-family: 'Unna', serif;
+  font-size: 20px;
+  padding-top: 1px;
+  position: relative;
+  
+}
+
+#timeline li:before {
+  position: relative;
+  display: inline-block;
+  background: #000;
+  height: 12px;
+  width: 2px;
+  left: 50%;
+  top: -15px;
+
+  content: '';
+}
+
 #tip {
   color: #fff;
+  font-size: 14px;
 }
 
 #tip h3 {
   margin-top: 0;
+  font-family: 'Signika Negative', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
 }
 
+#tip p {
+  font-family: 'Signika Negative', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+}
+
+#source {
+  position: absolute;
+  right: 20px;
+  bottom: 45px;
+  font-size: 10px;
+  color: #fff;
+  font-family: 'Signika Negative', sans-serif;
+  font-weight: 300;
+}
 /* http://davidwalsh.name/css-tooltips */
 /* base CSS element */
 .tip {
@@ -247,7 +328,7 @@ body {
   display: none;
   margin-left: 5px;
 
-  margin-top: 18px;
+  margin-top: 28px;
 }
 
 .tip.above {
