@@ -240,7 +240,7 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  background: #000;  
+  background: rgba(0,0,0,.5);  
   margin: 0;
   height: 26px;
   padding: 0;
@@ -271,8 +271,8 @@ body {
 #timeline li:before {
   position: relative;
   display: inline-block;
-  background: #000;
-  height: 12px;
+  background: rgba(0,0,0,.5);  
+  height: 10px;
   width: 2px;
   left: 50%;
   top: -15px;
@@ -283,6 +283,9 @@ body {
 #tip {
   color: #fff;
   font-size: 14px;
+  -webkit-transition: left .5s, top .5s;
+  -moz-transition: left .5s, top .5s;
+
 }
 
 #tip h3 {
@@ -307,6 +310,11 @@ body {
   color: #fff;
   font-family: 'Signika Negative', sans-serif;
   font-weight: 300;
+  opacity: .5;
+}
+
+#source:hover {
+  opacity: 1;
 }
 /* http://davidwalsh.name/css-tooltips */
 /* base CSS element */

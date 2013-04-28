@@ -211,6 +211,8 @@ MM.plot = function(v, start_year, pxStep) {
 	
 	path = MM.generateInterpolatedPath( MM.r, points);
 	
+	route.points = points;
+	
 	route.path = path;
 	
 	route.xstops = stops;
@@ -407,14 +409,42 @@ MM.generateInterpolatedPath = function( paper, points ) {
 }
 
 MM.travel = function(line) {
-	var route =  MM.fleet[line];
+	var route =  MM.fleet[line],
+		config = { stroke: 'white', fill: 'none', 'fill-opacity': 0, 'stroke-width': 4},
+		plen = route.points.length,
+		cur = 0,
+		delay = 6000;
+	
+	var get_path = function(p){
+		return "M"+route.points[cur].x+","+route.points[cur].y+"L"+route.points[cur+1].x+","+route.points[cur+1].y;	
+	}
+	
+	var show_stop = function() {
+	
+		MM.showStation("Cable Car", cur);
+		
+		
+		if(cur >= plen) return;
+		
+		MM.drawpath( MM.r, get_path(cur), delay, config, function(){
+			
+				show_stop();
+			
+		});
+		
+		cur++
+		
+	}
+	
+	show_stop(0);
 	
 	
-	var dpath = MM.drawpath( MM.r, MM.fleet[line].path, MM.width * 100, { stroke: 'white', fill: 'none', 'fill-opacity': 0, 'stroke-width': 4});
+	
+	//var dpath = MM.drawpath( MM.r, MM.fleet[line].path, MM.width * 100, { stroke: 'white', fill: 'none', 'fill-opacity': 0, 'stroke-width': 4});
 }
 
 
-MM.showStop = function(v, station) {
+MM.showStation = function(v, station) {
 	var e = MM.fleet[v].events[station],
 		s = MM.fleet[v].stops[station];
 
@@ -436,7 +466,7 @@ MM.drawpath = function( canvas, pathstr, duration, attr, callback ) {
 	var prevStation = 0;
 	var p = 1000;
 	
-	MM.showStop("Cable Car", 0);
+	//MM.showStop("Cable Car", 0);
 	
 	var interval_id = setInterval( function()
 	{
@@ -445,15 +475,15 @@ MM.drawpath = function( canvas, pathstr, duration, attr, callback ) {
 		var subpathstr = guide_path.getSubpath( 0, this_length );            
 		attr.path = subpathstr;
 		
-		var curr = guide_path.getPointAtLength( this_length );
-		var station = MM.fleet["Cable Car"].xstops[Math.round(curr.x)];
-		//log(MM.fleet["Cable Car"].xstops)
-		if(station && station != prevStation) {
-			console.log("stop", station)
-			MM.showStop("Cable Car", station);
-			
-			prevStation = station;
-		}
+		// var curr = guide_path.getPointAtLength( this_length );
+		// var station = MM.fleet["Cable Car"].xstops[Math.round(curr.x)];
+		// //log(MM.fleet["Cable Car"].xstops)
+		// if(station && station != prevStation) {
+		// 	console.log("stop", station)
+		// 	MM.showStop("Cable Car", station);
+		// 	
+		// 	prevStation = station;
+		// }
 
 		path.animate( attr, interval_length );
 		if ( elapsed_time >= duration )
