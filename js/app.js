@@ -98,6 +98,7 @@ MM.distributeEvents = function(events) {
 	events.forEach(function(e){
 		
 		e.v.forEach(function(v){
+			//console.log(v)
 			MM.fleet[v].events.push(e);
 		});
 		
