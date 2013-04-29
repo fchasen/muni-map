@@ -24,7 +24,7 @@ MM.init = function(el, events, fleet) {
 	//-- Create routes
 	MM.routes = MM.map(MM.fleet);
 	
-	MM.timeline($("#timeline"), 5);
+	MM.timeline($("#timeline"), 8);
 	
 	MM.start();
 	
@@ -84,7 +84,7 @@ MM.distributeEvents = function(events) {
 			"d" : e["Day"],
 			"v" : strim(e["Type of Vehicle"]),
 			"desc" : e["Event Description"],
-			"img" : "/photos/" + e["Image"],
+			"img" : "photos/" + e["Image"],
 			"source" : e["Source"]
 		}
 			
@@ -414,7 +414,7 @@ MM.travel = function(line) {
 		config = { stroke: 'white', fill: 'none', 'fill-opacity': 0, 'stroke-width': 4},
 		plen = route.points.length,
 		cur = 0,
-		delay = 6000;
+		delay = 4000;
 	
 	var get_path = function(p){
 		return "M"+route.points[cur].x+","+route.points[cur].y+"L"+route.points[cur+1].x+","+route.points[cur+1].y;	
@@ -557,7 +557,7 @@ MM.menu = function($el) {
 			MM.toggleRoute(name);
 			
 			//-- Travel down route
-			if(name == "Cable Car") MM.travel(name);
+			//if(name == "Cable Car") MM.travel(name);
 			
 			if($this.hasClass("off")) {
 				$this.removeClass("off");

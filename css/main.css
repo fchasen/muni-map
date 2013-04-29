@@ -24,7 +24,7 @@ body {
   left: 0;
   /* background-color: #000; */
   /* background-image: url('/photos/misc/intro.jpg');*/
-  opacity:0.6;
+  opacity:1;
   background-repeat: no-repeat;
   background-size: 100%;
   background-position: -50%;
@@ -240,7 +240,7 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  background: rgba(0,0,0,.5);  
+  background: rgba(0,0,0,1);  
   margin: 0;
   height: 26px;
   padding: 0;
