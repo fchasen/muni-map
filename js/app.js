@@ -1,3 +1,5 @@
+"use strict";
+
 var MM = {};
 var log = function(s){ console.log(s) };
 
@@ -40,11 +42,10 @@ MM.timeline = function($el, num_ticks) {
 		start_year = MM.events[0].y, //-- First event
 		end_year = MM.events[MM.events.length-1].y, //-- Last event
 		timeSpan = end_year - start_year,
-		timeStep = timeSpan / (num_ticks-1),
+		timeStep = timeSpan / (num_ticks-2),
 		offset = 20, //- offset
 		pxStep = Math.floor((MM.width - offset ) / num_ticks),
 		ticks = []; //-- pixel change per year
-	
 	
 	ticks.push($("<li>"+start_year+"</li>").css("left", offset));
 
@@ -61,7 +62,7 @@ MM.timeline = function($el, num_ticks) {
 }
 MM.distributeEvents = function(events) {
 	
-	cleaned = [];
+	var cleaned = [];
 	
 	//-- Clean events from google-docs to shorthand
 	events.forEach(function(e){
@@ -70,8 +71,8 @@ MM.distributeEvents = function(events) {
 		if(!e["Image"]) return;
 		
 		var strim = function(s) {
-			r = [];
-			l = s.split(",");
+			var r = [];
+			var l = s.split(",");
 			l.forEach(function(i){
 				r.push(i.trim());
 			});
@@ -99,13 +100,21 @@ MM.distributeEvents = function(events) {
 		
 		e.v.forEach(function(v){
 			//console.log(v)
-			MM.fleet[v].events.push(e);
+			MM.fleet[v].events.push({
+				"y" : e.y,
+				"m" : e.m,
+				"d" : e.d,
+				"desc" : e.desc,
+				"img" : e.img,
+				"source" : e.source
+			});
 		});
 		
 	});
 	
 	return events;
 }
+
 
 MM.compare = function(a,b) {
   if (a.y < b.y)
@@ -124,12 +133,17 @@ MM.map = function(fleet) {
 		start_year = MM.events[0].y, //-- First event
 		end_year = MM.events[num_events-1].y, //-- Last event
 		timeSpan = end_year - start_year,
-		right = 0, //- offset
+		right = 20, //- offset
 		pxStep = Math.floor((MM.width - right ) / timeSpan); //-- pixel change per year
-	for (v in MM.fleet) {
-		route = MM.fleet[v];
+	
+	MM.paused = {};
+	
+	for (var v in MM.fleet) {
+		var route = MM.fleet[v];
 		
 		if(!route.events.length) return;
+		
+		MM.paused[v] = 0;
 		
 		MM.plot(v, start_year, pxStep );
 		
@@ -145,74 +159,107 @@ MM.plot = function(v, start_year, pxStep) {
 		events = route.events,
 		s_height = route.s_height,
 		points = [],
-		left = 20, //-- offset
+		leftOffset = 20, //-- offset
+		rad = 6,
 		height = MM.height - MM.height * (s_height / 100), //-- reverse grid and plot by %
 		path,
 		dir = 0,
 		reset = false,
 		stops = {};
 	
-	events.forEach(function(e, i){
-		var p = 0; 
+	
+	route.rpath.forEach(function(e, i){
+		var x = e[0],
+			y = e[1],
+			top = MM.height * (y / 100),
+			left = pxStep * (x - start_year);
 		
-		if(i + 1 < events.length && (events[i+1].y - events[i].y == 1)) {
-			p = pxStep * dir;
-			
-			if(height + p > MM.height - 20) {
-				p = p * -1;
-			}
-			
-			if(height + p - 20 < 0) {
-				p = p * -1;
-			}
-			
-		}
-		
-		if(i + 1 < events.length && (events[i+1].y - events[i].y > 2)) {
-			p = dir * Math.random()*60; //(e.pos >= 0 ? e.pos : Math.random()*20);
-			
-			
-			if(height + p > MM.height - 20) {
-				p = p * -1;
-			}
-			
-			if(height + p - 20 < 0) {
-				p = p * -1;
-			}
-			
-			
-			
-			reset = true;
-			
-			
-		}else if(reset){
-			dir = (Math.random() < 0.5 ? -1 : 1);
-			reset = false;
-		}
-		
-		
-		point = { 
-					x: left + pxStep * (e.y - start_year), 
-					y: height + p,
-					c: e.c
-				};
-		
-		height = height + p;
-		
-		e.point = point;
-		
-		stops[point.x] = i;
-		
-		points.push(point);
-		//log( point )
-		//log(events)
+		points.push({ x: leftOffset + left, y: top});
+
 			
 	});
-
 	
 	path = MM.generateInterpolatedPath( MM.r, points);
+
+	var epoints = [];
 	
-	route.points = points;
+	// var guide = MM.r.path(path).attr( { stroke: "none", fill: "none" } );
+	// var total_length = guide.getTotalLength( guide );
+	// var plength = 0;
+	// 
+	// route.guide = guide;
+	// 
+	// var sliceup = function(x,y) {
+	// 	var r = false;
+	// 	var seg = route.guide.getSubpath( plength, total_length );
+	// 	var len = Raphael.getTotalLength(seg);
+	// 	var chunk = Math.ceil(len / 1000);
+	// 	
+	// 	for (var i=0; i < len; i+=chunk) {
+	// 		var p = guide.getPointAtLength( i );
+	// 		//console.log(x, y, p.x, p.y)
+	// 		if(Math.round(p.x) == x && Math.round(p.y) == y) {
+	// 			r = i; 
+	// 			break;
+	// 		}
+	// 	}
+	// 	
+	// 	return r;
+	// 	
+	// }
+	
+	route.events.forEach(function(e, i){
+		var left = leftOffset + pxStep * (e.y - start_year),
+			inter = Raphael.pathIntersection("M"+left+",0 L"+left+","+MM.height, path),
+			top,
+			prev = (i-1) >= 0 ? route.events[i-1] : false,
+			twists = ["M"],
+			point;
+			
+		if(!inter[0]) { console.log("error", e); }
+		
+		top = inter[0].y;
+		
+		//console.log("slice:", sliceup(Math.round(inter[0].x), Math.round(inter[0].y)) );
+		point = { 
+					x: left, 
+					y: top
+				};
+		
+		e.point = point;
+				
+		if(prev) {
+			twists.push(prev.point.x, prev.point.y, "L");
+		}
+		
+		
+		for (var j=0; j < route.rpath.length; j++) {
+			
+			var year = route.rpath[j][0];
+			
+			if(year >= e.y) break;
+			
+			if(year > prev.y) {
+				twists.push(points[j].x, points[j].y);
+				//console.log(points[j].x, points[j].y)
+			}
+		}
+		
+		twists.push( left, top );
+		
+
+		e.slice = twists;
+
+		//console.log(point)
+		stops[point.x] = i;
+		
+		epoints.push(point);
+		//log( point )
+		//log(events)
+	});
+	
+	
+	route.points = epoints;
 	
 	route.path = path;
 	
@@ -247,7 +294,6 @@ MM.toggleRoute = function(v) {
 		//	}, delay * i);
 		});
 		
-		
 		route.shown = true;
 	}else{
 		route.line.hide();
@@ -258,6 +304,9 @@ MM.toggleRoute = function(v) {
 		
 		route.glow.remove();
 		
+		if(v == MM.traveling) MM.stop(v);
+
+
 		route.shown = false;
 	}
 	
@@ -267,8 +316,10 @@ MM.drawRoute = function(v) {
 	var route = MM.fleet[v],
 		path = route.path,
 		events = route.events,
-		stops = [],
-		color = route.color || Raphael.getColor();
+		stops = MM.r.set(),
+		color = route.color || Raphael.getColor(),
+		$tip = $("#tip"),
+		$src = $("#source");
 		
 	//-- Draw the line path
 	route.line = MM.r.path( path )
@@ -279,39 +330,71 @@ MM.drawRoute = function(v) {
 	
 	if(!events) return;
 	
+	
+	
 	//-- Draw event points
 	events.forEach(function(e, i){
 		var t, lock;
+		var cs = MM.r.set();
 		
-		c = MM.r.circle( e.point.x, e.point.y, 7 )
-			.attr( { fill: "white", stroke: color , 'stroke-width': 4 } )
-			.hover(function () {
+		var c = MM.r.circle( e.point.x, e.point.y, 7 )
+			.attr( { fill: "white", stroke: color , 'stroke-width': 4 } );
+			
+		var hit = MM.r.circle( e.point.x, e.point.y, 14 )
+			.attr({stroke: "none", fill: "transparent" })
+		
+		cs.push(c, hit);
+		
+		hit.hover(function () {
 		   		if(lock) return;
 		   		lock = true;
+
+		   		c.attr( { fill: color } );
 		   		
-		   		this.attr( { fill: color } );
+		   		if(MM.traveling) MM.pause(MM.traveling);
 		   		
+		   		MM.tip(c, [e.m, e.d+",", e.y].join(" "), e.v, e.desc);
 		   		
-		   		MM.tip(this, [e.m, e.d+",", e.y].join(" "), e.v, e.desc);
+		   		$src.html(e.source).attr("href", e.source);
 		   		
 		   		MM.bg(e.img);
 		   		
 		   		clearTimeout(t);
 		   		
+		   		
+		   		
+		   		
+		   		
 			}, function() { 
-				var that = this;
 				t = setTimeout(function(){					
-					that.attr( { fill: "white" } );
+					c.attr( { fill: "white" } );
 					MM.$tip.hide();
 					lock = false;
 				}, 450);
 				
 				
-			} )
-			.hide();	
+			} );
+		
+		$tip.on("mouseenter", function(){
+			clearTimeout(t);
+		});
+		
+		$tip.on("mouseleave", function(){
+			t = setTimeout(function(){					
+				c.attr( { fill: "white" } );
+				MM.$tip.hide();
+				lock = false;
+			}, 150);
+		});
+		
+		cs.hide();	
+		
+		hit.node.setAttribute('class',  'station')
+
 		//c.glow(glowSettings);
 		
-		stops.push(c);
+		//stops.push(c);
+		stops.push(cs)
 	});
 	
 	route.stops = stops;
@@ -319,7 +402,8 @@ MM.drawRoute = function(v) {
 
 
 MM.tip = function(el, title, type, desc) {
-	var $el = $(el[0]);
+	var $el = $(el[0]),
+		rect;
 	if(!$el.length) return;
 	
 	//-- set content
@@ -374,29 +458,6 @@ MM.generateInterpolatedPath = function( paper, points ) {
 
 	for ( var i = 1; i < points.length; i++ ) {
 		
-		
-		
-		if(points[i].c) {
-
-			path_sequence.push( "C" );
-			
-			if(points[i].c == "+") {
-				path_sequence.push( points[i-1].x + 30, points[i-1].y );
-				path_sequence.push( points[i].x, points[i-1].y );
-			}else if(points[i].c == "-") {
-				path_sequence.push( points[i-1].x + 30, points[i].y );
-				path_sequence.push( points[i].x, points[i].y );
-			}
-			
-			path_sequence.push( points[i].x, points[i].y );
-			
-			
-			path_sequence.push( "M" );
-			
-			
-
-		}
-		
 
 		path_sequence.push( points[i].x, points[i].y );
 
@@ -409,54 +470,113 @@ MM.generateInterpolatedPath = function( paper, points ) {
 	return path_sequence;
 }
 
-MM.travel = function(line) {
+MM.travelLines = {};
+
+MM.travel = function(line, startat) {
 	var route =  MM.fleet[line],
 		config = { stroke: 'white', fill: 'none', 'fill-opacity': 0, 'stroke-width': 4},
-		plen = route.points.length,
-		cur = 0,
-		delay = 4000;
-	
-	var get_path = function(p){
-		return "M"+route.points[cur].x+","+route.points[cur].y+"L"+route.points[cur+1].x+","+route.points[cur+1].y;	
+		plen = route.events.length - 1,
+		cur = startat || 0,
+		delay = 4000,
+		st;
+		
+	if(!MM.travelLines[line]){
+		st = MM.travelLines[line] = MM.r.set();
+	}else{
+		st = MM.travelLines[line];
 	}
+	
+	MM.pause(MM.traveling);
+	
+	MM.traveling = line;
 	
 	var show_stop = function() {
 	
-		MM.showStation("Cable Car", cur);
+		MM.showStation(line, cur);
 		
+		if(cur > plen ) return; //-- should never get here
 		
-		if(cur >= plen) return;
+		if(cur == plen ) {
+			MM.showStation(line, cur);
+			return;
+		}
 		
-		MM.drawpath( MM.r, get_path(cur), delay, config, function(){
-			
-				show_stop();
+		var p = MM.drawpath( MM.r, route.events[cur+1].slice, delay, config, function(){
+				var l = line;
+				if(MM.traveling == l){
+					show_stop();
+				}
 			
 		});
 		
+		st.push(p);
+		
 		cur++
+		MM.paused[line] = cur;
 		
 	}
 	
 	show_stop(0);
 	
 	
-	
 	//var dpath = MM.drawpath( MM.r, MM.fleet[line].path, MM.width * 100, { stroke: 'white', fill: 'none', 'fill-opacity': 0, 'stroke-width': 4});
 }
 
+
+MM.pause = function(line) {
+	var $el;
+	
+	if(MM.traveling) {
+		$el = $("#toggle-"+(MM.traveling.replace(" ", "_"))).find(".travel");
+		$el.removeClass("pause");
+		$el.addClass("play");		
+	}
+
+	MM.traveling = false;
+	clearInterval(MM.interval_id);
+	
+	MM.$tip.hide();
+}
+
+MM.resume = function(line) {
+		var pausedat = MM.paused[line];
+		var config = { stroke: 'white', fill: 'none', 'fill-opacity': 0, 'stroke-width': 4};
+		
+		if(MM.traveling) MM.pause(MM.traveling);
+		
+		var p = MM.drawpath( MM.r, MM.fleet[line].events[pausedat].slice, 150, config, function(){
+				MM.travel(line, MM.paused[line]);
+		});
+		
+		if(MM.travelLines[line]) {
+			MM.travelLines[line].push(p);	
+		}
+		
+}
+
+MM.stop = function(line) {
+	MM.traveling = false;
+	clearInterval(MM.interval_id);
+	MM.paused[line] = 0;
+	
+	MM.$tip.hide();
+	
+	MM.travelLines[line].remove();
+	MM.travelLines[line] = false;
+	
+}
 
 MM.showStation = function(v, station) {
 	var e = MM.fleet[v].events[station],
 		s = MM.fleet[v].stops[station];
 
-	MM.tip(s, [e.m, e.d+",", e.y].join(" "), e.v, e.desc);
+	MM.tip(s[0], [e.m, e.d+",", e.y].join(" "), e.v, e.desc);
 	
 	MM.bg(e.img);
 	$("#source").html(e.source).attr("href", e.source);
 }
 
 MM.drawpath = function( canvas, pathstr, duration, attr, callback ) {
-	
 	var guide_path = canvas.path( pathstr ).attr( { stroke: "none", fill: "none" } );
 	var path = canvas.path( guide_path.getSubpath( 0, 1 ) ).attr( attr );
 	var total_length = guide_path.getTotalLength( guide_path );
@@ -465,8 +585,8 @@ MM.drawpath = function( canvas, pathstr, duration, attr, callback ) {
 	var interval_length = 50;
 	var result = path;        
 	var prevStation = 0;
-	var p = 1000;
 	
+	//console.log(pathstr, guide_path)
 	//MM.showStop("Cable Car", 0);
 	
 	var interval_id = setInterval( function()
@@ -485,8 +605,11 @@ MM.drawpath = function( canvas, pathstr, duration, attr, callback ) {
 		// 	
 		// 	prevStation = station;
 		// }
-
+		
 		path.animate( attr, interval_length );
+		
+		path.node.setAttribute('class',  'nopointer')
+		
 		if ( elapsed_time >= duration )
 		{
 			clearInterval( interval_id );
@@ -494,6 +617,9 @@ MM.drawpath = function( canvas, pathstr, duration, attr, callback ) {
 			guide_path.remove();
 		}                                       
 	}, interval_length );  
+	
+	MM.interval_id = interval_id;
+	
 	return result;
 }
 
@@ -503,7 +629,9 @@ MM.start = function() {
 		$title = $("#titlecard"),
 		$shape = $("#bgshape"),
 		$menu = $("#menu"),
-		$timeline = $("#timeline");
+		$timeline = $("#timeline"),
+		$follower = $("#follower"),
+		$document = $(document);
 		
 		MM.bg("/photos/misc/intro-light.jpg");
 		
@@ -526,13 +654,26 @@ MM.start = function() {
 			$timeline.addClass("show");
 			
 			setTimeout(function(){
-				f = $menu.find("a")[0];
-				$(f).trigger("click");
-			}, 2800);		
+				var f = $menu.find("li")[0];
+				//$(f).trigger("click");
+				$(f).find(".toggle").trigger("click");
+				
+				MM.travel_line = MM.travel("Cable Car");
+				
+				$follower.show();
+				$document.on("mousemove", function(e) {
+					var left = e.clientX;
+					
+					$follower.css("left", left);
+				});
+				
+			}, 2500);		
 			
 			
 			e.preventDefault();
 		})
+		
+		
 		
 		setTimeout(function(){
 			$(document).on("keyup", function(e) {
@@ -544,31 +685,81 @@ MM.start = function() {
 }
 
 MM.menu = function($el) {
-	for (v in MM.fleet) {
+	for (var v in MM.fleet) {
 		var id = v.replace(' ', '_'),
-			b = $("<a href='#"+id+"' id='toggle-"+id+"' class='off' style='background-color: "+MM.fleet[v].color+"' data-v='"+v+"'>"+v+"</a>");
+			$b = $("<li id='toggle-"+id+"' style='background-color: "+MM.fleet[v].color+"' data-v='"+v+"' class='off'><a href='#"+id+"'  class='toggle' >"+v+"</a><a href='#"+id+"' class='travel play'></a></li>"),
+			$tog = $b.find(".toggle"),
+			$play = $b.find(".travel");
 			
 		if(!MM.fleet[v].events.length) return;
 		
-		b.on("click", function(e){
+		if(v == "Cable Car") {
+			$play.removeClass("play");
+			$play.addClass("pause");
+		}
+		
+		$tog.on("click", function(e){
 			var $this = $(this),
-				name = $this.data("v");
+				$p = $this.parent(),
+				$pb = $p.find(".travel"),
+				name = $p.data("v");
 
 			MM.toggleRoute(name);
 			
-			//-- Travel down route
-			//if(name == "Cable Car") MM.travel(name);
 			
-			if($this.hasClass("off")) {
-				$this.removeClass("off");
+			if($p.hasClass("off")) {
+				$p.removeClass("off");
+												
 			}else{
-				$this.addClass("off");
+				$p.addClass("off");
+				
+				$pb.removeClass("pause");
+				$pb.addClass("play");
+				
 			}
 			
 			e.preventDefault();
 		});
 		
-		$el.append(b);
+		$play.on("click", function(e) {
+			var $this = $(this),
+				$p = $this.parent(),
+				name = $p.data("v");
+			
+			if($p.hasClass("off")) {
+				
+				MM.toggleRoute(name);
+				
+				MM.travel(name);
+				$p.removeClass("off");
+				
+				//$(".pause").removeClass("pause").addClass("play");
+				
+				$this.removeClass("play");
+				$this.addClass("pause");
+
+			} else if($this.hasClass("pause")){
+				MM.pause(name);
+				
+				$this.removeClass("pause");
+				$this.addClass("play");
+				
+			} else if($this.hasClass("play")){
+				
+				MM.resume(name);
+				
+				//$(".pause").removeClass("pause").addClass("play");
+				
+				$this.removeClass("play");
+				$this.addClass("pause");
+				
+			}
+			
+			e.preventDefault();
+			
+		});
+		
+		$el.append($b);
 	};
 }
 
