@@ -23,36 +23,38 @@
         
     </head>
     <body>
-        
-        <div id="bg"></div>
-        <div id="holder"></div>
-        <div id="bgshape"></div>
-        
-        <div id="follower"></div>
-        <ul id="timeline"></ul>
-        <ul id="menu"></ul>
-        <div id="tip" class="tip"><div id="tip-content"></div></div>
-        <a id="source" href="#" target="_blank"></a>
-        <div id="titlecard">
-            <h1>
-                San Francisco<br/>
-                Transit
-            </h1>
-            <h2>
-                The Good,<br/>
-                The Beautiful,<br/>
-                The Quirky
-            </h2>
+        <div id="wrapper">        
+            <div id="bg"></div>
+            <div id="holder"></div>
+            <div id="bgshape"></div>
+            
+            <div id="follower"></div>
+            <div id="timeline-holder">
+                <ul id="timeline"></ul>
+            </div>
+            <ul id="menu"></ul>
+            <div id="tip" class="tip"><div id="tip-content"></div><div id="tip-close">x</div></div>
+            <a id="source" href="#" target="_blank"></a>
+            <div id="titlecard">
+                <h1>
+                    San Francisco<br/>
+                    Transit
+                </h1>
+                <h2>
+                    The Good,<br/>
+                    The Beautiful,<br/>
+                    The Quirky
+                </h2>
+            </div>
+            <div id="intro">
+                <p>Morbi non erat non ipsum pharetra tempus. Donec orci. Proin in ante. Pellentesque sit amet purus. Cras egestas diam sed ante. Etiam imperdiet urna sit amet risus. Donec ornare arcu id erat. Aliquam ultrices scelerisque sem. In elit nulla, molestie vel, ornare sit amet, interdum vel, mauris. Etiam dignissim imperdiet metus.</p>
+                <a id="start" href="#start">Start</a>
+            </div>
         </div>
-        <div id="intro">
-            <p>Morbi non erat non ipsum pharetra tempus. Donec orci. Proin in ante. Pellentesque sit amet purus. Cras egestas diam sed ante. Etiam imperdiet urna sit amet risus. Donec ornare arcu id erat. Aliquam ultrices scelerisque sem. In elit nulla, molestie vel, ornare sit amet, interdum vel, mauris. Etiam dignissim imperdiet metus.</p>
-            <a id="start" href="#start">Start</a>
-        </div>
-    
         <script type="text/javascript">
             "use strict";
             MM.init("holder", events, fleet);
-            holderPosition.init();
+            //holderPosition.init();
         </script>
         
     </body>

@@ -43,19 +43,33 @@ MM.timeline = function($el, num_ticks) {
 		end_year = MM.events[MM.events.length-1].y, //-- Last event
 		timeSpan = end_year - start_year,
 		timeStep = timeSpan / (num_ticks-2),
-		offset = 20, //- offset
+		offset = 0, //- offset
+		halfw = 50,
 		pxStep = Math.floor((MM.width - offset ) / num_ticks),
-		ticks = []; //-- pixel change per year
-	
+		ticks = [], //-- pixel change per year,
+		needsEnd = true; 
+
+	//console.log("time", start_year, end_year, timeSpan, MM.width/timeSpan, pxStep, (pxStep * num_ticks-1));
+
 	ticks.push($("<li>"+start_year+"</li>").css("left", offset));
 
 	for ( var i = 1; i <= num_ticks-2; i++ ) {
-		var tick = $("<li>"+Math.round(start_year + timeStep * i)+"</li>");
-		tick.css("left", offset + (pxStep * i));
-		ticks.push(tick);
+		var y = Math.round(start_year + timeStep * i),
+			tick = $("<li>"+y+"</li>");
+		
+		
+			tick.css("left", offset + (pxStep * i) - halfw);
+			ticks.push(tick);
+			
+		if(y != end_year){
+			needsEnd = false;
+		}
 	}
 	
-	ticks.push($("<li>"+end_year+"</li>").css("left", MM.width - offset - 180));
+	if(needsEnd) {
+		ticks.push($("<li>"+end_year+"</li>").css("left", offset + (pxStep * num_ticks-1) - halfw));
+	}
+	
 	
 	$el.append(ticks);
 
@@ -133,9 +147,9 @@ MM.map = function(fleet) {
 		start_year = MM.events[0].y, //-- First event
 		end_year = MM.events[num_events-1].y, //-- Last event
 		timeSpan = end_year - start_year,
-		right = 20, //- offset
+		right = 0, //- offset
 		pxStep = Math.floor((MM.width - right ) / timeSpan); //-- pixel change per year
-	
+	//console.log("map", start_year, end_year, timeSpan, MM.width/timeSpan, pxStep, pxStep * (2013-start_year));
 	MM.paused = {};
 	
 	for (var v in MM.fleet) {
@@ -217,10 +231,10 @@ MM.plot = function(v, start_year, pxStep) {
 			point;
 			
 		if(!inter[0]) { 
-			console.log("No Intersection", v, e.y, left, path); 
-			if(left < path[1]) { 
+			//console.log("No Intersection", v, e.y, left, path); 
+			if(left <= path[1]) { 
 				top = path[2];
-			}else if(left > path[path.length - 2]) {
+			}else if(left >= path[path.length - 2]) {
 				top = path[path.length - 1];
 			}
 		}else{
@@ -373,24 +387,24 @@ MM.drawRoute = function(v) {
 			}, function() { 
 				t = setTimeout(function(){					
 					c.attr( { fill: "white" } );
-					MM.$tip.hide();
+					//MM.$tip.hide();
 					lock = false;
-				}, 450);
+				}, 50);
 				
 				
 			} );
 		
-		$tip.on("mouseenter", function(){
-			clearTimeout(t);
-		});
-		
-		$tip.on("mouseleave", function(){
-			t = setTimeout(function(){					
-				c.attr( { fill: "white" } );
-				MM.$tip.hide();
-				lock = false;
-			}, 150);
-		});
+		// $tip.on("mouseenter", function(){
+		// 	clearTimeout(t);
+		// });
+		// 
+		// $tip.on("mouseleave", function(){
+		// 	t = setTimeout(function(){					
+		// 		c.attr( { fill: "white" } );
+		// 		MM.$tip.hide();
+		// 		lock = false;
+		// 	}, 250);
+		// });
 		
 		cs.hide();	
 		
@@ -411,6 +425,7 @@ MM.tip = function(el, title, type, desc) {
 		rect,
 		wwidth = $(window).width(),
 		wheight = $(window).height(),
+		scroll = $(document).scrollTop(),
 		popWidth = 300,
 		left, top;
 		
@@ -422,7 +437,7 @@ MM.tip = function(el, title, type, desc) {
 	rect = $el.offset();
 	
 	left = rect.left;
-	top = rect.top;
+	top = rect.top - scroll;
 	
 	
 	if(rect.left > wwidth - popWidth ){
@@ -432,7 +447,7 @@ MM.tip = function(el, title, type, desc) {
 		MM.$tip.removeClass("left");
 	} 
 	
-	if(rect.top > wheight - popWidth ){
+	if(rect.top > wheight - MM.$tip.height() ){
 		MM.$tip.addClass("above");
 		top = top - MM.$tip.height();
 	}else{
@@ -446,6 +461,9 @@ MM.tip = function(el, title, type, desc) {
 	
 	MM.$tip.show();
 	
+	MM.$tip.find("#tip-close").on("click", function(){
+		MM.$tip.hide();
+	});
 	//console.log(rect.left, rect.top)
 }
 
@@ -455,10 +473,10 @@ MM.bg = function(url) {
 		MM.$bg = $("#bg");
 	}
 	
-	MM.$bg.fadeOut(400, function(){
+	MM.$bg.fadeOut(800, function(){
 		
 		MM.$bg.css("background-image", "url("+url+")");	
-		MM.$bg.fadeIn(800);
+		MM.$bg.fadeIn(400);
 		
 	});	
 	
@@ -657,8 +675,9 @@ MM.start = function() {
 		$title = $("#titlecard"),
 		$shape = $("#bgshape"),
 		$menu = $("#menu"),
-		$timeline = $("#timeline"),
+		$timeline = $("#timeline-holder"),
 		$follower = $("#follower"),
+		$bg = $("html"),
 		$document = $(document);
 		
 		MM.bg("/photos/misc/intro.jpg");
@@ -680,6 +699,8 @@ MM.start = function() {
 			
 			$menu.addClass("show");
 			$timeline.addClass("show");
+			
+			//$bg.css("background-color", "#eee");
 			
 			setTimeout(function(){
 				var f = $menu.find("li")[0];
