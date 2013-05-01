@@ -216,9 +216,17 @@ MM.plot = function(v, start_year, pxStep) {
 			twists = ["M"],
 			point;
 			
-		if(!inter[0]) { console.log("error", e); }
-		
-		top = inter[0].y;
+		if(!inter[0]) { 
+			console.log("error", v, e.y, left, path); 
+			if(left < path[1]) { 
+				top = path[2];
+			}else if(left > path[path.length - 1]) {
+				top = path[path.length - 1];
+			}
+		}else{
+			top = inter[0].y;
+		}
+		//console.log(left, path[1], inter[0].x)
 		
 		//console.log("slice:", sliceup(Math.round(inter[0].x), Math.round(inter[0].y)) );
 		point = { 
@@ -288,11 +296,8 @@ MM.toggleRoute = function(v) {
 		
 		route.glow = route.line.glow(glowSettings);
 		
-		route.stops.forEach(function(stop, i) {
-			//setTimeout(function(){
-				stop.show();
-		//	}, delay * i);
-		});
+		route.stops.show();
+		
 		
 		route.shown = true;
 	}else{
@@ -474,10 +479,10 @@ MM.travelLines = {};
 
 MM.travel = function(line, startat) {
 	var route =  MM.fleet[line],
-		config = { stroke: 'white', fill: 'none', 'fill-opacity': 0, 'stroke-width': 4},
+		config = { stroke: 'white', fill: 'none', 'fill-opacity': 0, 'stroke-width': 3},
 		plen = route.events.length - 1,
 		cur = startat || 0,
-		delay = 4000,
+		delay = 4500,
 		st;
 		
 	if(!MM.travelLines[line]){
@@ -540,7 +545,7 @@ MM.pause = function(line) {
 
 MM.resume = function(line) {
 		var pausedat = MM.paused[line];
-		var config = { stroke: 'white', fill: 'none', 'fill-opacity': 0, 'stroke-width': 4};
+		var config = { stroke: 'white', fill: 'none', 'fill-opacity': 0, 'stroke-width': 3};
 		
 		if(MM.traveling) MM.pause(MM.traveling);
 		
@@ -633,7 +638,7 @@ MM.start = function() {
 		$follower = $("#follower"),
 		$document = $(document);
 		
-		MM.bg("/photos/misc/intro-light.jpg");
+		MM.bg("/photos/misc/intro.jpg");
 		
 		$shape.addClass("show");
 		$intro.addClass("show");
