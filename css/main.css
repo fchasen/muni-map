@@ -314,7 +314,7 @@ body {
   font-size: 14px;
   -webkit-transition: left .5s, top .5s;
   -moz-transition: left .5s, top .5s;
-
+  width: 300px;
 }
 
 #tip h3 {
@@ -364,7 +364,6 @@ body {
  
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   position: fixed;
-  max-width: 300px;
   font-size: 12px;
 
   display: none;
@@ -373,25 +372,12 @@ body {
   margin-top: 28px;
 }
 
-.tip.above {
-  margin-top: -10px;
-}
-
 .tip.left {
-  margin-left: -20px;
+  margin-left: -12px;
 }
 
-.tip.right {
-  margin-left: 40px;
-}
-
-.pop_content {
-  max-height: 225px;
-  overflow-y: auto;
-}
-
-.pop_content > p {
-  margin-top: 0;
+.tip.above {
+  margin-top: -34px;
 }
 
 /* below */
@@ -422,30 +408,30 @@ body {
 }
 
 /* above */
-.tip.above:before {
-  border-bottom: none;
-  border-top: 10px solid #eee;
-  border-top-color: rgba(0, 0, 0, 0.2);
-  top: 100%;
-}
-
 .tip.above:after {
+  border-right: 9px solid transparent;
   border-bottom: none;
-  border-top: 9px solid #eee;
+  border-top: 9px solid rgba(0, 0, 0, 0.8);
+  border-left: none;
   top: 100%;
 }
 
-.tip.left:before,
 .tip.left:after
 {
-  left: 20px;
+  border-bottom: 9px solid transparent;
+  border-left: 9px solid transparent;
+  border-right: 12px solid rgba(0, 0, 0, 0.8);
+  left: auto;
+  right: 0;
 }
 
-.tip.right:before,
-.tip.right:after
+.tip.left.above:after
 {
-  left: auto;
-  right: 20px;
+  border-left: 9px solid transparent;
+  border-bottom: none;
+  border-top: 9px solid rgba(0, 0, 0, 0.8);
+  border-right: none;
+  top: 100%;
 }
 
 
