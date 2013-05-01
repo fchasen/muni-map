@@ -217,10 +217,10 @@ MM.plot = function(v, start_year, pxStep) {
 			point;
 			
 		if(!inter[0]) { 
-			console.log("error", v, e.y, left, path); 
+			console.log("No Intersection", v, e.y, left, path); 
 			if(left < path[1]) { 
 				top = path[2];
-			}else if(left > path[path.length - 1]) {
+			}else if(left > path[path.length - 2]) {
 				top = path[path.length - 1];
 			}
 		}else{
@@ -408,7 +408,12 @@ MM.drawRoute = function(v) {
 
 MM.tip = function(el, title, type, desc) {
 	var $el = $(el[0]),
-		rect;
+		rect,
+		wwidth = $(window).width(),
+		wheight = $(window).height(),
+		popWidth = 300,
+		left, top;
+		
 	if(!$el.length) return;
 	
 	//-- set content
@@ -416,10 +421,28 @@ MM.tip = function(el, title, type, desc) {
 	//-- locations of station
 	rect = $el.offset();
 	
+	left = rect.left;
+	top = rect.top;
+	
+	
+	if(rect.left > wwidth - popWidth ){
+		MM.$tip.addClass("left");
+		left = left - MM.$tip.width();
+	}else{
+		MM.$tip.removeClass("left");
+	} 
+	
+	if(rect.top > wheight - popWidth ){
+		MM.$tip.addClass("above");
+		top = top - MM.$tip.height();
+	}else{
+		MM.$tip.removeClass("above");
+	}
+	
+
 	//-- position the popup
-	//MM.$tip.css("left", rect.left - MM.$tip.width() / 2 );
-	MM.$tip.css("left", rect.left );
-	MM.$tip.css("top", rect.top + "px" );
+	MM.$tip.css("left", left );
+	MM.$tip.css("top", top + "px" );
 	
 	MM.$tip.show();
 	
