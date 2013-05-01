@@ -26,7 +26,7 @@ MM.init = function(el, events, fleet) {
 	//-- Create routes
 	MM.routes = MM.map(MM.fleet);
 	
-	MM.timeline($("#timeline"), 8);
+	MM.timeline($("#timeline"), 9);
 	
 	MM.start();
 	
@@ -800,3 +800,15 @@ MM.findById = function(source, id) {
 		return +obj.id === +id;
 	})[ 0 ];
 }
+
+
+
+//----------------------------------------------------------------------------------------------------
+
+var holderPosition = { 
+    init : function() {
+	    var l = ($(window).width() - 1020) / 2;
+	    $("#holder").css({"left": l});
+    }
+};
+
