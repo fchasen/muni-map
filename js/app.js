@@ -473,10 +473,10 @@ MM.bg = function(url) {
 		MM.$bg = $("#bg");
 	}
 	
-	MM.$bg.fadeOut(800, function(){
+	MM.$bg.fadeOut(100, function(){
 		
 		MM.$bg.css("background-image", "url("+url+")");	
-		MM.$bg.fadeIn(400);
+		MM.$bg.fadeIn(500);
 		
 	});	
 	
