@@ -129,6 +129,7 @@ p {
   position: absolute;
   right: 140px;
   bottom: 80px;
+  z-index: 3;
   
   -webkit-transition: -webkit-transform 1.5s 2s;
   -moz-transition: -moz-transform 1.5s 2s;
