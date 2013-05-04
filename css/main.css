@@ -3,7 +3,7 @@ html {
 }
 
 body {
-  min-width: 1020px;
+  min-width: 1024px;
 }
 
 p {
@@ -18,7 +18,7 @@ p {
   height: 100%;
   overflow: hidden;
   min-height: 680px;
-  min-width: 1020px;
+  min-width: 1080px;
 }
 
 #holder {
@@ -350,6 +350,66 @@ p {
   content: '';
 }
 
+#end {
+  background: #000;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 90%;
+  height: 100%;
+  z-index: 5;
+  display: none;
+  color: #fff;  
+}
+
+#end-arrow {
+  position: fixed;
+ 
+  left: 91%;
+  top: 100px;
+
+  width: 21px;
+  height: 41px;
+  z-index: 4;
+  display: none;
+  
+  margin-top: -13px;
+  
+  background-image: url('../img/rightarrow.png');
+  background-repeat: no-repeat;
+}
+
+.left { 
+  float: right; 
+  width: 380px;
+  margin-right: 100px; 
+  margin-top: 50px;
+}
+
+.right { 
+  float: right;
+  margin-right: 50px; 
+  width: 300px;
+  margin-top: 50px;
+}
+
+#end-name {
+  font-size: 75px;
+  position: absolute;
+  right: 50px;
+  bottom: 50px;
+}
+#end-close {
+  background: url(../img/tip-close.png) 0 0 no-repeat;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  width: 12px;
+  height:12px;
+}
+
 #tip {
   color: #fff;
   font-size: 14px;
@@ -403,6 +463,7 @@ p {
   text-decoration: none;
   text-transform: uppercase;
   z-index: 3;
+  display: none;
 }
 
 #source:hover {
