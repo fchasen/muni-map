@@ -723,23 +723,17 @@ MM.stop = function(line) {
 MM.showStation = function(v, station) {
 	var e = MM.fleet[v].events[station],
 		s = MM.fleet[v].stops[station];
-
-	MM.tip(s[0], [e.m, e.d+",", e.y].join(" "), e.v, e.desc);
-	
-	MM.bg(e.img);
-	$("#source").attr("href", e.source);
 	
 	if(!e.end) {
 					
-		MM.tip(c, [e.m, e.d+",", e.y].join(" "), e.v, e.desc);
-		
-		$src.attr("href", e.source);
+		MM.tip(s[0], [e.m, e.d+",", e.y].join(" "), e.v, e.desc);
 		
 		MM.bg(e.img);
+		$("#source").attr("href", e.source);
 					
 	}else{
 			
-		MM.end(c, e.name, e.overview, e.next, e.links, e.stat1, e.stat2, e.img);
+		MM.end(s[0], e.name, e.overview, e.next, e.links, e.stat1, e.stat2, e.img);
 					
 	}
 }
