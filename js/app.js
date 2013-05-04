@@ -767,7 +767,7 @@ MM.start = function() {
 				$document.on("mousemove", function(e) {
 					var left = e.clientX;
 					//console.log(hleft, hright)
-					if(left > hleft && left < hright) {
+					if(left > hleft-4 && left < hright) {
 						$follower.css("left", left);
 					}
 					
