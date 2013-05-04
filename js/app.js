@@ -402,6 +402,31 @@ MM.drawRoute = function(v) {
 		
 		cs.push(c, hit);
 		
+		hit.click(function () {	
+			
+			if(MM.stop_that_is_on) {
+				MM.stop_that_is_on.attr( { fill: "white" } );
+			}
+			
+			c.attr( { fill: color } );
+			
+			MM.stop_that_is_on = c;
+			
+			if(MM.traveling) MM.pause(MM.traveling);
+			
+			onhover(c);
+		});
+		
+		hit.hover(function () {
+			c.attr( { fill: color } );
+		}, function() {
+			
+			if(MM.stop_that_is_on != c) {
+				c.attr( { fill: "white" } );
+			}
+		});
+		
+		/*
 		hit.hover(function () {
 		   		if(lock) return;
 		   		lock = true;
@@ -428,7 +453,7 @@ MM.drawRoute = function(v) {
 				
 				
 			} );
-		
+		*/
 		// $tip.on("mouseenter", function(){
 		// 	clearTimeout(t);
 		// });
@@ -458,7 +483,12 @@ MM.drawRoute = function(v) {
 
 				MM.tip(c, e.date, e.v, e.desc);
 				
-				$src.attr("href", e.source);
+				if(e.source) {
+					$src.attr("href", e.source).show();
+				}else{
+					$src.attr("href", e.source).hide();
+				}
+				
 				
 				MM.bg(e.img);
 				
@@ -733,14 +763,20 @@ MM.stop = function(line) {
 
 MM.showStation = function(v, station) {
 	var e = MM.fleet[v].events[station],
-		s = MM.fleet[v].stops[station];
+		s = MM.fleet[v].stops[station],
+		$src = $("#source");
 	
 	if(!e.end) {
 					
 		MM.tip(s[0], e.date, e.v, e.desc);
 		
 		MM.bg(e.img);
-		$("#source").attr("href", e.source);
+		
+		if(e.source) {
+			$src.attr("href", e.source).show();
+		}else{
+			$src.attr("href", e.source).hide();
+		}
 					
 	}else{
 			
