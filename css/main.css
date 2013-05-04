@@ -374,7 +374,7 @@ p {
 }
 
 #tip-close:hover {
-  color: #d3d2d2;
+  opacity: .8;
 }
 
 #source {

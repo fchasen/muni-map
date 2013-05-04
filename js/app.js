@@ -3,7 +3,7 @@
 var MM = {};
 var log = function(s){ console.log(s) };
 
-MM.init = function(el, events, fleet) {
+MM.init = function(el, events, fleet, ends) {
 	
 	//-- expects a element it
 	MM.$el = $("#"+el);
@@ -13,6 +13,7 @@ MM.init = function(el, events, fleet) {
 	
 	MM.events = events;
 	MM.fleet = fleet;
+	MM.ends = ends;
 	
 	MM.$tip = $("#tip");
 	MM.$tipTxt = MM.$tip.find("#tip-content");
@@ -44,21 +45,20 @@ MM.timeline = function($el, num_ticks) {
 		timeSpan = end_year - start_year,
 		timeStep = timeSpan / (num_ticks-2),
 		offset = 0, //- offset
-		halfw = 50,
+		halfw = 8,
 		pxStep = Math.floor((MM.width - offset ) / num_ticks),
 		ticks = [], //-- pixel change per year,
 		needsEnd = true; 
 
 	//console.log("time", start_year, end_year, timeSpan, MM.width/timeSpan, pxStep, (pxStep * num_ticks-1));
 
-	ticks.push($("<li>"+start_year+"</li>").css("left", offset));
+	ticks.push($("<li>"+start_year+"</li>").css("left", offset ));
 
 	for ( var i = 1; i <= num_ticks-2; i++ ) {
 		var y = Math.round(start_year + timeStep * i),
 			tick = $("<li>"+y+"</li>");
 		
-		
-			tick.css("left", offset + (pxStep * i) - halfw);
+			tick.css("left", offset + (pxStep * i) - (halfw * i));
 			ticks.push(tick);
 			
 		if(y != end_year){
@@ -109,6 +109,8 @@ MM.distributeEvents = function(events) {
 	//-- Sort events by year
 	events = cleaned.sort(MM.compare);
 	
+	MM.end_year = 2013;//events[events.length-1].y;
+	
 	//-- Split events off into each fleet vehicle
 	events.forEach(function(e){
 		
@@ -125,6 +127,25 @@ MM.distributeEvents = function(events) {
 		});
 		
 	});
+	
+	//-- Add in End screens
+	for (var v in MM.ends) {
+		
+		var e = MM.ends[e],
+			route = MM.fleet[e];
+		
+		route.events.push({
+			"y" : MM.end_year,
+			"end" : true,
+			"name" : route.name,
+			"overview" : e.overview,
+			"future" : e.future,
+			"links" : e.links,
+			"stats" : e.stats,
+			"img" : route.img
+		});			
+		
+	}
 	
 	return events;
 }
@@ -226,10 +247,20 @@ MM.plot = function(v, start_year, pxStep) {
 		var left = leftOffset + pxStep * (e.y - start_year),
 			inter = Raphael.pathIntersection("M"+left+",0 L"+left+","+MM.height, path),
 			top,
-			prev = (i-1) >= 0 ? route.events[i-1] : false,
+			prev = (i-1) > 0 ? route.events[i-1] : false,
 			twists = ["M"],
 			point;
-			
+		
+		if(prev) {
+			var px = prev.point.x;
+			//console.log(prev)
+
+			if(left - px < 8) {
+				left = px + 14;
+				inter = Raphael.pathIntersection("M"+left+",0 L"+left+","+MM.height, path)
+			}
+		}
+				
 		if(!inter[0]) { 
 			//console.log("No Intersection", v, e.y, left, path); 
 			if(left <= path[1]) { 
@@ -261,7 +292,7 @@ MM.plot = function(v, start_year, pxStep) {
 			
 			if(year >= e.y) break;
 			
-			if(year > prev.y) {
+			if(year >= prev.y) {
 				twists.push(points[j].x, points[j].y);
 				//console.log(points[j].x, points[j].y)
 			}
@@ -349,34 +380,24 @@ MM.drawRoute = function(v) {
 	
 	if(!events) return;
 	
-	
-	
-	//-- Draw event points
-	events.forEach(function(e, i){
-		var t, lock;
-		var cs = MM.r.set();
-		
-		var c = MM.r.circle( e.point.x, e.point.y, 7 )
-			.attr( { fill: "white", stroke: color , 'stroke-width': 4 } );
-			
-		var hit = MM.r.circle( e.point.x, e.point.y, 14 )
-			.attr({stroke: "none", fill: "transparent" })
+	function makeCircle(x, y, onhover) {
+		var t, lock,
+		    cs = MM.r.set(),
+			c = MM.r.circle( x, y, 7 ).attr( { fill: "white", stroke: color , 'stroke-width': 4 } ),
+			hit = MM.r.circle( x, y, 14 ).attr({stroke: "none", fill: "transparent" });
 		
 		cs.push(c, hit);
 		
 		hit.hover(function () {
 		   		if(lock) return;
 		   		lock = true;
-
+			
 		   		c.attr( { fill: color } );
 		   		
 		   		if(MM.traveling) MM.pause(MM.traveling);
 		   		
-		   		MM.tip(c, [e.m, e.d+",", e.y].join(" "), e.v, e.desc);
+		   		onhover(c);
 		   		
-		   		$src.html(e.source).attr("href", e.source);
-		   		
-		   		MM.bg(e.img);
 		   		
 		   		clearTimeout(t);
 		   		
@@ -408,14 +429,44 @@ MM.drawRoute = function(v) {
 		
 		cs.hide();	
 		
-		hit.node.setAttribute('class',  'station')
-
+		hit.node.setAttribute('class',  'station');
+		
+		return cs;
+	}
+	
+	//-- Draw event points
+	events.forEach(function(e, i){
+		var s;
+		
+		if(!e.end) {
+			
+			s = makeCircle(e.point.x, e.point.y, function(c){
+				
+				MM.tip(c, [e.m, e.d+",", e.y].join(" "), e.v, e.desc);
+				
+				$src.attr("href", e.source);
+				
+				MM.bg(e.img);
+				
+			});
+			
+		}else{
+			
+			s = makeCircle(e.point.x, e.point.y, function(c){
+				
+				MM.end(c, e.v);
+				
+			});
+			
+		}
 		//c.glow(glowSettings);
 		
 		//stops.push(c);
-		stops.push(cs)
+		stops.push(s)
 	});
 	
+	
+	//stops.push(makeCircle(path[path.length-2], path[path.length-1], function(c){}))
 	route.stops = stops;
 }
 
@@ -619,7 +670,7 @@ MM.showStation = function(v, station) {
 	MM.tip(s[0], [e.m, e.d+",", e.y].join(" "), e.v, e.desc);
 	
 	MM.bg(e.img);
-	$("#source").html(e.source).attr("href", e.source);
+	$("#source").attr("href", e.source);
 }
 
 MM.drawpath = function( canvas, pathstr, duration, attr, callback ) {
@@ -678,7 +729,10 @@ MM.start = function() {
 		$timeline = $("#timeline-holder"),
 		$follower = $("#follower"),
 		$bg = $("html"),
-		$document = $(document);
+		$holder = $("#holder"),
+		$document = $(document),
+		hleft = $holder.offset().left + 24,
+		hright = hleft + $holder.width() - 24;
 		
 		MM.bg("/photos/misc/intro.jpg");
 		
@@ -712,8 +766,11 @@ MM.start = function() {
 				$follower.show();
 				$document.on("mousemove", function(e) {
 					var left = e.clientX;
+					//console.log(hleft, hright)
+					if(left > hleft && left < hright) {
+						$follower.css("left", left);
+					}
 					
-					$follower.css("left", left);
 				});
 				
 			}, 2500);		
@@ -822,7 +879,11 @@ MM.findById = function(source, id) {
 	})[ 0 ];
 }
 
-
+MM.endScreen = function() {
+	MM.fleet[v].forEach(function(line) {
+		
+	});
+}
 
 //----------------------------------------------------------------------------------------------------
 
