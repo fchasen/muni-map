@@ -6,7 +6,7 @@
         <title>SF transit history map</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
-        
+
         <link href='http://fonts.googleapis.com/css?family=Signika+Negative:300,400,700|Unna' rel='stylesheet' type='text/css'>
 
         <link rel="stylesheet" href="css/normalize.css">
@@ -14,13 +14,13 @@
         <link rel="icon" type="image/png" href="favicon.png">
 
         <!-- <script src="js/vendor/modernizr-2.6.2.min.js"></script> -->
-        
+
         <script src="js/vendor/jquery-2.0.0.min.js"></script>
         <script src="js/vendor/raphael-min.js"></script>
-        
+
         <script src="js/events.js"></script>
         <script src="js/app.js"></script>
-        
+
     </head>
     <body>
         <div id="wrapper">        
@@ -28,12 +28,30 @@
             <div id="follower"></div>
             <div id="holder"></div>
             <div id="bgshape"></div>
-            
+
             <div id="timeline-holder">
                 <ul id="timeline"></ul>
             </div>
             <ul id="menu"></ul>
             <div id="tip" class="tip"><div id="tip-content"></div><div id="tip-close">&nbsp;</div></div>
+            <div id="end">
+                <div id="end-image"></div>
+                <div class="right">
+                    <h3>Want to learn more?</h3>
+                    <div id="end-links"></div>
+                    <div id="end-stat1"></div>
+                    <div id="end-stat2"></div>
+                </div>
+                <div class="left">
+                    <div id="end-overview"></div>
+                    <h3>What's next?</h3>
+                    <div id="end-next"></div>
+                </div>
+
+                <div id="end-name"></div>
+                <div id="end-close">&nbsp;</div>
+            </div>
+            <div id="end-arrow"></div>
             <a id="source" href="#" target="_blank">Image Source</a>
             <div id="titlecard">
                 <h1>
@@ -55,6 +73,6 @@
             "use strict";
             MM.init("holder", events, fleet, ends);
         </script>
-        
+
     </body>
 </html>

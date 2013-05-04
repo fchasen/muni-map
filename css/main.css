@@ -59,10 +59,10 @@ p {
   height: 100%;
   width: 100%;
   margin-left: -50%;
-    
+
   -webkit-transition: -webkit-transform 1.5s .2s;
   -moz-transition: -moz-transform 1.5s .2s;
-  
+
   -webkit-transform: rotate(-45deg) translate(-2000px, 0);
   -moz-transform: rotate(-45deg) translate(-2000px, 0);
 }
@@ -80,8 +80,8 @@ p {
   height: 100%;
   padding: 50px;
    */
-  
- 
+
+
 }
 
 #titlecard h1 {
@@ -96,7 +96,7 @@ p {
   margin: 0;
   -webkit-transition: -webkit-transform 1.5s 1s;
   -moz-transition: -moz-transform 1.5s 1s;
-  
+
   -webkit-transform: translate(-700px, 0);
   -moz-transform: translate(-700px, 0);
 }
@@ -111,10 +111,10 @@ p {
   font-size: 40px;
   width: 250px;
   text-align: right;
-  
+
   -webkit-transition: -webkit-transform 1.5s 1.5s;
   -moz-transition: -moz-transform 1.5s 1.5s;
-  
+
   -webkit-transform: translate(-600px, 0);
   -moz-transform: translate(-600px, 0);
 }
@@ -130,24 +130,24 @@ p {
   right: 140px;
   bottom: 80px;
   z-index: 3;
-  
+
   -webkit-transition: -webkit-transform 1.5s 2s;
   -moz-transition: -moz-transform 1.5s 2s;
-  
+
   -webkit-transform: translate(600px, 0);
   -moz-transform: translate(600px, 0);
-  
+
 }
 
 #intro p {
-	margin: 0 0 20px 0;
+  margin: 0 0 20px 0;
 }
 
 #intro.closed,
 #titlecard.closed h1,
 #titlecard.closed h2,
 #bgshape.closed {
-  
+
   -webkit-transition: -webkit-transform 1s .2s;
   -moz-transition: -moz-transform 1s .2s;
 }
@@ -172,10 +172,10 @@ p {
   text-transform: uppercase;
   text-decoration: none;
   color: #fff;
-  
+
   -webkit-transition: -webkit-transform 1.5s 2.5s;
   -moz-transition: -moz-transform 1.5s 2.5s;
-  
+
   -webkit-transform: translate(600px, 0);
   -moz-transform: translate(600px, 0);
 }
@@ -216,7 +216,7 @@ p {
   width: 150px;
   -webkit-transition: -webkit-transform 1s;
   -moz-transition: -moz-transform 1s;
-  
+
   -webkit-transform: translate(-600px, 0);
   -moz-transform: translate(-600px, 0);
   text-transform: uppercase;
@@ -285,10 +285,10 @@ p {
   left: 0;
   height: 100%;
   z-index: 1;
-  
+
   margin-left: -12px;
   display: none;
-  
+
   border-left: 12px solid transparent;
   border-right: 12px solid transparent;
   border-bottom: 12px solid rgba(0, 0, 0, 1);
@@ -302,10 +302,10 @@ p {
 
   background: rgba(0,0,0,1);  
   height: 26px;
-  
+
   -webkit-transition: -webkit-transform 1s;
   -moz-transition: -moz-transform 1s;
-  
+
   -webkit-transform: translate(0, 50px);
   -moz-transform: translate(0, 50px);
 }
@@ -335,7 +335,7 @@ p {
   font-size: 20px;
   padding-top: 1px;
   position: relative;
-  
+
 }
 
 #timeline li:before {
@@ -348,6 +348,66 @@ p {
   top: -15px;
 
   content: '';
+}
+
+#end {
+  background: #000;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 90%;
+  height: 100%;
+  z-index: 5;
+  display: none;
+  color: #fff;  
+}
+
+#end-arrow {
+  position: fixed;
+
+  left: 91%;
+  top: 100px;
+
+  width: 21px;
+  height: 41px;
+  z-index: 4;
+  display: none;
+
+  margin-top: -13px;
+
+  background-image: url('../img/rightarrow.png');
+  background-repeat: no-repeat;
+}
+
+.left { 
+  float: right; 
+  width: 380px;
+  margin-right: 100px; 
+  margin-top: 50px;
+}
+
+.right { 
+  float: right;
+  margin-right: 50px; 
+  width: 300px;
+  margin-top: 50px;
+}
+
+#end-name {
+  font-size: 75px;
+  position: absolute;
+  right: 50px;
+  bottom: 50px;
+}
+#end-close {
+  background: url(../img/tip-close.png) 0 0 no-repeat;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  width: 12px;
+  height:12px;
 }
 
 #tip {
@@ -385,7 +445,7 @@ p {
 }
 
 #tip-close:hover {
-  color: #d3d2d2;
+  opacity: .8;
 }
 
 #source {
@@ -403,6 +463,7 @@ p {
   text-decoration: none;
   text-transform: uppercase;
   z-index: 3;
+  display: none;
 }
 
 #source:hover {
@@ -417,14 +478,14 @@ p {
 /* base CSS element */
 .tip {
   background: rgba(0, 0, 0, 0.8);
-  
+
   /* 
   border: 1px solid #ccc; 
   border-radius: 8px;
   */
-  
+
   padding: 7px 10px 0 10px;
- 
+
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   position: fixed;
   font-size: 12px;
@@ -451,10 +512,10 @@ p {
   border-right: 10px solid transparent;
   border-left: 10px solid rgba(0, 0, 0, 0.8);
   border-left-color: rgba(0, 0, 0, 0.2);
-  
+
   left: 0;
   top: -10px;
-  
+
   content: '';
 } */
 
