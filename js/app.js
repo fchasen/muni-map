@@ -82,7 +82,7 @@ MM.distributeEvents = function(events) {
 	
 	//-- Clean events from google-docs to shorthand
 	events.forEach(function(e){
-		//if(e["Use"] != "x") return;
+		var formated_date;
 		
 		if(!e["Image"]) return;
 		
@@ -94,7 +94,9 @@ MM.distributeEvents = function(events) {
 			});
 			return r;
 		}
+		
 
+		
 		var item = {
 			"y" : parseInt(e["Year"]),
 			"m" : e["Month"],
@@ -104,7 +106,15 @@ MM.distributeEvents = function(events) {
 			"img" : "photos/" + e["Image"],
 			"source" : e["Source"]
 		}
-			
+		
+		if(item.d) {
+			item.date = [item.m, item.d+",", item.y].join(" ");
+		} else if (item.m) {
+			item.date = [item.m, item.y].join(", ");
+		} else {
+			item.date = item.y;
+		}
+		
 		cleaned.push(item);
 	});
 	
@@ -124,7 +134,8 @@ MM.distributeEvents = function(events) {
 				"d" : e.d,
 				"desc" : e.desc,
 				"img" : e.img,
-				"source" : e.source
+				"source" : e.source,
+				"date" : e.date
 			});
 		});
 		
@@ -444,8 +455,8 @@ MM.drawRoute = function(v) {
 		if(!e.end) {
 			
 			s = makeCircle(e.point.x, e.point.y, function(c){
-				
-				MM.tip(c, [e.m, e.d+",", e.y].join(" "), e.v, e.desc);
+
+				MM.tip(c, e.date, e.v, e.desc);
 				
 				$src.attr("href", e.source);
 				
@@ -726,7 +737,7 @@ MM.showStation = function(v, station) {
 	
 	if(!e.end) {
 					
-		MM.tip(s[0], [e.m, e.d+",", e.y].join(" "), e.v, e.desc);
+		MM.tip(s[0], e.date, e.v, e.desc);
 		
 		MM.bg(e.img);
 		$("#source").attr("href", e.source);
