@@ -920,6 +920,9 @@ MM.start = function() {
 		$bg = $("html"),
 		$holder = $("#holder"),
 		$source = $("#source"),
+		$credits = $("#credits"),
+		$credit = $("#credit"),
+		$byline = $("#byline"),
 		$document = $(document),
 		hleft = $holder.offset().left + 24,
 		hright = hleft + $holder.width() - 24;
@@ -930,7 +933,8 @@ MM.start = function() {
 		$intro.addClass("show");
 		$title.addClass("show");
 		
-		
+		$byline.delay(4000).fadeIn(400);
+		$credit.delay(4400).fadeIn(400);
 		
 		$s.on("click", function(e) {
 			$intro.removeClass("show");
@@ -944,6 +948,9 @@ MM.start = function() {
 			
 			$menu.addClass("show");
 			$timeline.addClass("show");
+			
+			$byline.delay(40).fadeOut(200);
+			$credit.delay(20).fadeOut(200);
 			
 			//$bg.css("background-color", "#eee");
 			
@@ -1013,6 +1020,14 @@ MM.start = function() {
 			if(MM.stop_that_is_on) {
 				MM.stop_that_is_on.attr( { fill: "white" } );
 			}
+		});
+		
+		$credit.on("click", function() {
+			$credits.fadeIn(100);
+		});
+		
+		$credits.find("#close-credits").on("click", function(){
+			$credits.fadeOut(100);
 		});
 		
 		$(document).on("keyup", function(e) {
