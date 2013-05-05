@@ -11,8 +11,13 @@ MM.init = function(el, events, fleet, ends) {
 	
 	MM.width = MM.$el.width();
 	//MM.height = MM.$el.height();
-	MM.height = MM.width * 2 / 3;
+	MM.height = Math.round(MM.width * 3 / 4);
 	
+	MM.elHeight = MM.$el.height();
+	if(MM.elHeight < MM.height) {
+		MM.height = MM.elHeight;
+		MM.width = Math.round(MM.height * 4 / 3);
+	}
 	
 	MM.events = events;
 	MM.fleet = fleet;
@@ -319,15 +324,16 @@ MM.plot = function(v, start_year, pxStep) {
 	// 	return r;
 	// 	
 	// }
-	
 	route.events.forEach(function(e, i){
 		var left = leftOffset + pxStep * (e.y - start_year),
-			inter = Raphael.pathIntersection("M"+left+",0 L"+left+","+MM.height, path),
-			top,
+			inter = Raphael.pathIntersection("M"+left+",0 "+left+","+MM.height, path),
+			top = 0,
 			prev = (i-1) >= 0 ? route.events[i-1] : false,
 			twists = ["M"],
 			point;
-			
+
+		
+		//console.log(pxStep,  (e.y - start_year), left)
 		if(prev) {
 			var px = prev.point.x;
 			//console.log(prev)
@@ -336,8 +342,7 @@ MM.plot = function(v, start_year, pxStep) {
 				//console.log(left,  px, left -px, pxStep)
 				
 				left = px + pxStep * 2;
-				inter = Raphael.pathIntersection("M"+left+",0 L"+left+","+MM.height, path)
-				
+				inter = Raphael.pathIntersection("M"+left+",0 "+left+","+MM.height, path)
 			}
 
 		}
@@ -345,7 +350,9 @@ MM.plot = function(v, start_year, pxStep) {
 		
 
 		if(!inter[inter.length-1]) { 
-			//console.log("No Intersection", v, e.y, left); 
+			//console.log("No Intersection", v, e.y, left, pxStep * (e.y - start_year)); 
+			//MM.r.path( "M"+left+",0 "+left+","+MM.height ).attr( { stroke: route.color, 'stroke-width': .5, fill: 'none' } )
+
 			if(left <= path[1]) { 
 				top = path[2];
 			}else if(left >= path[path.length - 2]) {
