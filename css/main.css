@@ -38,6 +38,10 @@ p {
   height: 500px; */
 }
 
+svg {
+  display: block;
+}
+
 #bg {
   position: absolute;
   top: 0;
