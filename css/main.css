@@ -428,29 +428,40 @@ p {
   width: 380px;
   margin-top: 50px;
 }
+
+#end-image {
+	float: right;
+	margin: 50px 0 0 0;
+}
+
 #end h2 {
 	font-size: 75px;
 	font-weight: normal;
 	letter-spacing: -2px;
 	margin: 0;
 }
+
 #end h3 {
   font-family: 'Unna', serif;
   font-size: 28px;
   margin: 0 0 10px 0;
 }
+
 #end-links {
 	margin: 0 0 30px 0;
 	padding: 0 0 40px 0;
 }
+
 #end-stat1 {
 	margin: 0 0 15px 0;
 }
+
 #end-overview {
   	font-size: 18px;
   	line-height: 24px;
 	margin: 0 0 20px 0;
 }
+
 #end-links {
 	border-bottom: 10px dotted #333;
 }
@@ -458,6 +469,7 @@ p {
   	font-size: 18px;
   	line-height: 24px;
 }
+
 #end-stat1 h3,
 #end-stat2 h3 {
   color: #999;
@@ -467,6 +479,7 @@ p {
   letter-spacing: 1px;
   text-transform: uppercase;
 }
+
 #end-name {
   color: #fff;
   font-family: 'Unna', serif;
@@ -477,6 +490,7 @@ p {
   text-transform: lowercase;
   bottom: 30px;
 }
+
 #end-close {
   background: url(../img/tip-close-l.png) 0 0 no-repeat;
   position: absolute;
@@ -493,6 +507,7 @@ p {
 #end-close:hover {
   opacity:.8;
 }
+
 .end-cable-car .second,
 .end-cable-car a {
   color: #80480c;

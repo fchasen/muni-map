@@ -2,7 +2,7 @@ var fleet = {
 	"Cable Car" : {
 		"name": "Cable Car",
 		"color" : "#80480c",
-		"img" : "",
+		"img" : "img/icon-cablecar.png",
 		"events" : [],
 		"rpath" : [
 			[1873, 62],
@@ -20,6 +20,7 @@ var fleet = {
 	"Street Car" : {
 		"name": "Street Car",
 		"color" : "#c23827",
+		"img" : "img/icon-streetcar.png",
 		"events" : [],
 		"rpath" : [
 			[1888, 72],
@@ -32,6 +33,7 @@ var fleet = {
 	"Motor Bus" : {
 		"name": "Motor Bus",
 		"color" : "#65447f",
+		"img" : "img/icon-motorbus.png",
 		"events" : [],
 		"rpath" : [
 			[1917, 86.5],
@@ -46,6 +48,7 @@ var fleet = {
 	"Trolley Bus" : {
 		"name": "Trolley Bus",
 		"color" : "#6c9c20",
+		"img" : "img/icon-trolleybus.png",
 		"events" : [],
 		"rpath" : [
 			[1932, 70],
@@ -60,6 +63,7 @@ var fleet = {
 	"Light Rail" : {
 		"name": "Light Rail",
 		"color" : "#d8a028",
+		"img" : "img/icon-lightrail.png",
 		"events" : [],
 		"rpath" : [
 			[1972, 72],
@@ -72,6 +76,7 @@ var fleet = {
 	"Heavy Rail" : {
 		"name": "Heavy Rail",
 		"color" : "#247ba8",
+		"img" : "img/icon-heavyrail.png",
 		"events" : [],
 		"rpath" : [
 			[1957, 9],
