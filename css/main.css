@@ -35,8 +35,6 @@ p {
   height: 500px; */
 }
 
-
-
 #bg {
   position: absolute;
   top: 0;
@@ -72,6 +70,9 @@ p {
   -moz-transform: rotate(-45deg) translate(0, 0);
 }
 
+#holder path {
+	stroke-linejoin: round;
+}
 
 #titlecard {
 /*   position: absolute;
@@ -231,6 +232,13 @@ p {
   font-size: 14px;
   text-decoration: none;
   position: relative;
+  -webkit-transition: opacity 0.1s ease-out;
+  -moz-transition: opacity 0.1s ease-out;
+  transition: opacity 0.1s ease-out;
+}
+
+#menu li a:hover {
+  opacity:.8;
 }
 
 #menu .toggle {
@@ -351,21 +359,27 @@ p {
 }
 
 #end {
-  background: #000;
+  background: url('../img/end-bg.png');
+  font-family: 'Signika Negative', sans-serif;
   position: fixed;
   left: 0;
   top: 0;
-  width: 90%;
+  width: 91%;
   height: 100%;
   z-index: 5;
   display: none;
   color: #fff;  
 }
-
+#end a {
+  text-decoration: underline;
+}
+#end a:hover {
+  text-decoration: none;
+}
 #end-arrow {
   position: fixed;
 
-  left: 91%;
+  left: 92%;
   top: 100px;
 
   width: 21px;
@@ -389,26 +403,99 @@ p {
 .right { 
   float: right;
   margin-right: 50px; 
-  width: 300px;
+  width: 380px;
   margin-top: 50px;
 }
-
+#end h2 {
+	font-size: 75px;
+	font-weight: normal;
+	letter-spacing: -2px;
+	margin: 0;
+}
+#end h3 {
+  font-family: 'Unna', serif;
+  font-size: 28px;
+  margin: 0 0 10px 0;
+}
+#end-links {
+	margin: 0 0 30px 0;
+	padding: 0 0 40px 0;
+}
+#end-stat1 {
+	margin: 0 0 20px 0;
+}
+#end-overview {
+  	font-size: 18px;
+  	line-height: 22px;
+	margin: 0 0 20px 0;
+}
+#end-links {
+	border-bottom: 10px dotted #333;
+}
+#end-next {
+  	font-size: 18px;
+  	line-height: 22px;
+}
+#end-stat1 h3,
+#end-stat2 h3 {
+  color: #999;
+  font-family: 'Signika Negative', sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
 #end-name {
-  font-size: 75px;
+  color: #fff;
+  font-family: 'Unna', serif;
+  font-size: 175px;
+  letter-spacing: -3px;
   position: absolute;
   right: 50px;
-  bottom: 50px;
+  text-transform: lowercase;
+  bottom: 30px;
 }
 #end-close {
-  background: url(../img/tip-close.png) 0 0 no-repeat;
+  background: url(../img/tip-close-l.png) 0 0 no-repeat;
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 10px;
+  right: 10px;
   font-size: 12px;
   cursor: pointer;
-  width: 12px;
-  height:12px;
+  width: 40px;
+  height:40px;
+  -webkit-transition: opacity 0.1s ease-out;
+  -moz-transition: opacity 0.1s ease-out;
+  transition: opacity 0.1s ease-out;
 }
+#end-close:hover {
+  opacity:.8;
+}
+.end-cable-car .second,
+.end-cable-car a {
+  color: #80480c;
+}
+.end-street-car .second, 
+.end-street-car a {
+  color: #c23827;
+}
+.end-motor-bus .second, 
+.end-motor-bus a {
+  color: #65447f;
+}
+.end-trolley-bus .second,
+.end-trolley-bus a {
+  color: #6c9c20;
+}
+.end-light-rail .second,
+.end-light-rail a {
+  color: #d8a028;
+}
+.end-heavy-rail .second, 
+.end-heavy-rail a {
+  color: #247ba8;
+}
+
 
 #tip {
   color: #fff;
@@ -442,8 +529,10 @@ p {
   cursor: pointer;
   width: 12px;
   height:12px;
+  -webkit-transition: opacity 0.1s ease-out;
+  -moz-transition: opacity 0.1s ease-out;
+  transition: opacity 0.1s ease-out;
 }
-
 #tip-close:hover {
   opacity: .8;
 }
