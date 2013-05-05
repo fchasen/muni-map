@@ -89,6 +89,7 @@ p {
   font-family: 'Unna', serif;
   color: #fff;
   font-size: 100px;
+  font-weight: 300;
   letter-spacing: 2px;
   line-height: 1;
   position: absolute;
@@ -104,11 +105,12 @@ p {
 
 #titlecard h2 {
   font-family: 'Unna', serif;
+  font-weight: 300;
   position: absolute;
   top: 300px;
   left: 118px;
   margin: 0;
-  color: #d1e2e5;
+  color: #aaa;
   font-size: 40px;
   width: 250px;
   text-align: right;
@@ -123,8 +125,8 @@ p {
 #intro {
   font-family: 'Signika Negative', sans-serif;
   font-weight: 300;
-  font-size: 20px;
-  line-height: 26px;
+  font-size: 18px;
+  line-height: 24px;
   width: 380px;
   color: #fff;
   position: absolute;
@@ -142,6 +144,22 @@ p {
 
 #intro p {
   margin: 0 0 20px 0;
+}
+
+#byline {
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 1px;
+	line-height: 1.35;
+	text-transform: uppercase;
+}
+
+#byline a {
+	color: #fff;
+}
+#byline a:hover {
+	color: #fff;
+	text-decoration: none;
 }
 
 #intro.closed,
@@ -167,6 +185,7 @@ p {
   font-weight: 700;
   letter-spacing: 1px;
   font-size: 26px;
+  margin: 0 0 40px 0;
   padding: 10px 15px;
   background: transparent;
   display: inline-block;
@@ -193,7 +212,7 @@ p {
 }
 
 #start:hover {
-  background: #404040;
+  background: #333;
 }
 
 #start:active {
@@ -426,7 +445,7 @@ p {
 }
 #end-overview {
   	font-size: 18px;
-  	line-height: 22px;
+  	line-height: 24px;
 	margin: 0 0 20px 0;
 }
 #end-links {
@@ -434,7 +453,7 @@ p {
 }
 #end-next {
   	font-size: 18px;
-  	line-height: 22px;
+  	line-height: 24px;
 }
 #end-stat1 h3,
 #end-stat2 h3 {
