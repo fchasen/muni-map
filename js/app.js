@@ -929,13 +929,25 @@ MM.start = function() {
 		
 		//-- events
 		
+		
 		MM.$tip.find("#tip-close").on("click", function(){
 			MM.$tip.fadeOut(100);
+			MM.pause(MM.traveling);
+			if(MM.stop_that_is_on) {
+				MM.stop_that_is_on.attr( { fill: "white" } );
+			}
 		});
 		
 		MM.$end.find("#end-close").on("click", function(){
+		
+			MM.stop(MM.traveling);
+		
 			MM.$end.fadeOut(100);
 			$("#end-arrow").fadeOut(100);
+		
+			if(MM.stop_that_is_on) {
+				MM.stop_that_is_on.attr( { fill: "white" } );
+			}
 		});
 		
 		$(document).on("keyup", function(e) {
