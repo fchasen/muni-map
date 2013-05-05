@@ -7,9 +7,12 @@ MM.init = function(el, events, fleet, ends) {
 	var offset = 60;
 	//-- expects a element it
 	MM.$el = $("#"+el);
-
-	MM.width = MM.$el.width() + offset;
-	MM.height = MM.$el.height();
+	
+	
+	MM.width = MM.$el.width();
+	//MM.height = MM.$el.height();
+	MM.height = MM.width * 2 / 3;
+	
 	
 	MM.events = events;
 	MM.fleet = fleet;
@@ -21,7 +24,7 @@ MM.init = function(el, events, fleet, ends) {
 	MM.$end = $("#end");
 	
 	//-- Setup canvas
-	MM.r = Raphael(el, MM.width, MM.height);
+	MM.r = Raphael(el, MM.width + offset, MM.height);
 	
 	//-- Get events
 	MM.events = MM.distributeEvents(events);
@@ -48,10 +51,11 @@ MM.timeline = function($el, num_ticks) {
 		timeStep = timeSpan / (num_ticks-2),
 		offset = 0, //- offset
 		halfw = 8,
-		pxStep = Math.floor(($el.width() - offset ) / num_ticks),
+		pxStep = Math.floor((MM.width - offset ) / num_ticks),
 		ticks = [], //-- pixel change per year,
 		needsEnd = true; 
-
+	
+	$el.width(MM.width);
 	//console.log("time", start_year, end_year, timeSpan, MM.width/timeSpan, pxStep, (pxStep * num_ticks-1));
 
 	ticks.push($("<li>"+start_year+"</li>").css("left", offset ));
@@ -261,7 +265,7 @@ MM.plot = function(v, start_year, pxStep) {
 		var left = leftOffset + pxStep * (e.y - start_year),
 			inter = Raphael.pathIntersection("M"+left+",0 L"+left+","+MM.height, path),
 			top,
-			prev = (i-1) > 0 ? route.events[i-1] : false,
+			prev = (i-1) >= 0 ? route.events[i-1] : false,
 			twists = ["M"],
 			point;
 		
@@ -274,8 +278,10 @@ MM.plot = function(v, start_year, pxStep) {
 				inter = Raphael.pathIntersection("M"+left+",0 L"+left+","+MM.height, path)
 			}
 		}
-				
-		if(!inter[0]) { 
+		
+		
+
+		if(!inter.length) { 
 			//console.log("No Intersection", v, e.y, left, path); 
 			if(left <= path[1]) { 
 				top = path[2];
@@ -283,7 +289,7 @@ MM.plot = function(v, start_year, pxStep) {
 				top = path[path.length - 1];
 			}
 		}else{
-			top = inter[0].y;
+			top = inter[inter.length-1].y;
 		}
 		//console.log(left, path[1], inter[0].x)
 		
@@ -304,7 +310,7 @@ MM.plot = function(v, start_year, pxStep) {
 			
 			var year = route.rpath[j][0];
 			
-			if(year >= e.y) break;
+			if(year > e.y) break;
 			
 			if(year >= prev.y) {
 				twists.push(points[j].x, points[j].y);
@@ -368,7 +374,7 @@ MM.toggleRoute = function(v) {
 		
 		route.glow.remove();
 		
-		if(v == MM.traveling) MM.stop(v);
+		MM.stop(v);
 
 
 		route.shown = false;
@@ -383,11 +389,12 @@ MM.drawRoute = function(v) {
 		stops = MM.r.set(),
 		color = route.color || Raphael.getColor(),
 		$tip = $("#tip"),
-		$src = $("#source");
+		$src = $("#source"),
+		rad = MM.height > 710 ? 7 : 6;
 		
 	//-- Draw the line path
 	route.line = MM.r.path( path )
-					.attr( { stroke: color, 'stroke-width': 6, fill: 'none' } )
+					.attr( { stroke: color, 'stroke-width': rad - 1, fill: 'none' } )
 					.hide();
 					
 	
@@ -397,8 +404,8 @@ MM.drawRoute = function(v) {
 	function makeCircle(x, y, onhover) {
 		var t, lock,
 		    cs = MM.r.set(),
-			c = MM.r.circle( x, y, 7 ).attr( { fill: "white", stroke: color , 'stroke-width': 4 } ),
-			hit = MM.r.circle( x, y, 14 ).attr({stroke: "none", fill: "transparent" });
+			c = MM.r.circle( x, y, rad ).attr( { fill: "white", stroke: color , 'stroke-width': 4 } ),
+			hit = MM.r.circle( x, y, rad * 2 ).attr({stroke: "none", fill: "transparent" });
 		
 		cs.push(c, hit);
 		
@@ -566,10 +573,10 @@ MM.bg = function(url) {
 		MM.$bg = $("#bg");
 	}
 	
-	MM.$bg.fadeOut(100, function(){
+	MM.$bg.fadeOut(400, function(){
 		
 		MM.$bg.css("background-image", "url("+url+")");	
-		MM.$bg.fadeIn(500);
+		MM.$bg.fadeIn(300);
 		
 	});	
 	
@@ -595,6 +602,8 @@ MM.end = function(el, name, overview, next, links, stat1, stat2, image) {
 	if(!$el.length) return;
 	
 	MM.$tip.hide();
+	
+	MM.bg("/photos/misc/intro.jpg");
 	
 	//-- update content
 	$name.html("<span class='first'>"+names[0]+"</span><span class='second'>"+names[1]+"</span>");
@@ -695,7 +704,7 @@ MM.travel = function(line, startat) {
 			MM.showStation(line, cur);
 			return;
 		}
-		
+
 		var p = MM.drawpath( MM.r, route.events[cur+1].slice, delay, config, function(){
 				var l = line;
 				if(MM.traveling == l){
@@ -727,7 +736,7 @@ MM.pause = function(line) {
 		$el.addClass("play");		
 	}
 
-	MM.traveling = false;
+	//MM.traveling = false;
 	clearInterval(MM.interval_id);
 	
 	MM.$tip.hide();
@@ -756,8 +765,11 @@ MM.stop = function(line) {
 	
 	MM.$tip.hide();
 	
-	MM.travelLines[line].remove();
-	MM.travelLines[line] = false;
+	if(MM.travelLines[line]) {
+		MM.travelLines[line].remove();
+		MM.travelLines[line] = false;	
+	}
+	
 	
 }
 
@@ -854,6 +866,7 @@ MM.start = function() {
 		$title.addClass("show");
 		
 		
+		
 		$s.on("click", function(e) {
 			$intro.removeClass("show");
 			$title.removeClass("show");
@@ -869,27 +882,32 @@ MM.start = function() {
 			
 			//$bg.css("background-color", "#eee");
 			
-			setTimeout(function(){
-				var f = $menu.find("li")[0];
-				//$(f).trigger("click");
-				$(f).find(".toggle").trigger("click");
-				
-				MM.travel_line = MM.travel("Cable Car");
-				
-				$source.fadeIn();
-				
-				$follower.show();
-				$document.on("mousemove", function(e) {
-					var left = e.clientX;
-					//console.log(hleft, hright)
-					if(left > hleft-4 && left < hright) {
-						$follower.css("left", left);
-					}
-					
-				});
-				
-			}, 2500);		
+			var f = $menu.find("li")[0];
+			//$(f).trigger("click");
+			$(f).find(".toggle").trigger("click");
 			
+			setTimeout(function(){
+				$holder.fadeIn(1000, function() {
+					
+					setTimeout(function(){
+						MM.travel_line = MM.travel("Cable Car");
+					}, 1000);	
+					
+					
+					//$source.fadeIn();
+					
+					$follower.show();
+					$document.on("mousemove", function(e) {
+						var left = e.clientX;
+						//console.log(hleft, hright)
+						if(left > hleft-4 && left < hright) {
+							$follower.css("left", left);
+						}
+						
+					});
+					
+				});		
+			}, 1500);		
 			
 			e.preventDefault();
 		})
@@ -909,13 +927,22 @@ MM.start = function() {
 		
 		MM.$tip.find("#tip-close").on("click", function(){
 			MM.$tip.hide();
+			MM.pause(MM.traveling);
+			if(MM.stop_that_is_on) {
+				MM.stop_that_is_on.attr( { fill: "white" } );
+			}
 		});
 		
 		MM.$end.find("#end-close").on("click", function(){
 			
+			MM.stop(MM.traveling);
+			
 			MM.$end.fadeOut();
 			$("#end-arrow").fadeOut();
 			
+			if(MM.stop_that_is_on) {
+				MM.stop_that_is_on.attr( { fill: "white" } );
+			}
 		});
 		
 }
