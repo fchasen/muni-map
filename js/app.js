@@ -332,8 +332,7 @@ MM.plot = function(v, start_year, pxStep) {
 			var px = prev.point.x;
 			//console.log(prev)
 
-
-			if(left - px < 8) {
+			if(left - px <= pxStep + 2) {
 				//console.log(left,  px, left -px)
 
 				left = px + 14;
