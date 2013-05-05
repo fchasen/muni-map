@@ -441,7 +441,7 @@ p {
 	padding: 0 0 40px 0;
 }
 #end-stat1 {
-	margin: 0 0 20px 0;
+	margin: 0 0 15px 0;
 }
 #end-overview {
   	font-size: 18px;
@@ -561,7 +561,7 @@ p {
   padding: 5px 10px;
   display: block;
   position: absolute;
-  right: 20px;
+  right: 40px;
   bottom: 50px;
   font-size: 10px;
   color: #fff;
