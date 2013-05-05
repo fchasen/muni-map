@@ -23,6 +23,8 @@ MM.init = function(el, events, fleet, ends) {
 	MM.fleet = fleet;
 	MM.ends = ends;
 	
+	MM.images = [];
+	
 	MM.$tip = $("#tip");
 	MM.$tipTxt = MM.$tip.find("#tip-content");
 	
@@ -44,6 +46,7 @@ MM.init = function(el, events, fleet, ends) {
 	MM.menu($("#menu"));
 	
 	
+	MM.preloadImages(MM.images);
 	
 	
 }
@@ -95,6 +98,7 @@ MM.distributeEvents = function(events) {
 		
 		if(!e["Image"]) return;
 		
+		
 		var strim = function(s) {
 			var r = [];
 			var l = s.split(",");
@@ -116,6 +120,9 @@ MM.distributeEvents = function(events) {
 			"source" : e["Source"]
 		}
 		
+		MM.images.push(item.img);
+
+
 		if(item.d) {
 			item.date = [item.m, item.d+",", item.y].join(" ");
 		} else if (item.m) {
@@ -1135,3 +1142,25 @@ MM.findById = function(source, id) {
 	})[ 0 ];
 }
 
+/*
+ * jQuery.preloadImages - jQuery Plugin
+ * reloads images
+ */
+
+//-- https://github.com/divThis/jquery-preload-images/blob/master/jquery.preloadImages.js
+
+MM.preloadImages = function(imgs, callback) {
+		// set defaults
+		var imgs = (typeof imgs == 'string') ? [imgs] : imgs || [];
+		var callback = callback || function(){};
+
+		// iterate through each image
+		$.each(imgs, function(i, img){
+			// create image and call callback on load
+			
+			//var img = $('<img />').load(callback).attr('src', img).get(0);
+			$('<img />').load(callback).attr('src', img)
+			//cache.push(img);
+		});
+	
+};
