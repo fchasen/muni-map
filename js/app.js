@@ -273,10 +273,12 @@ MM.plot = function(v, start_year, pxStep) {
 			var px = prev.point.x;
 			//console.log(prev)
 
+
 			if(left - px < 8) {
 				left = px + 14;
 				inter = Raphael.pathIntersection("M"+left+",0 L"+left+","+MM.height, path)
 			}
+
 		}
 		
 		
@@ -404,8 +406,8 @@ MM.drawRoute = function(v) {
 	function makeCircle(x, y, onhover) {
 		var t, lock,
 		    cs = MM.r.set(),
-			c = MM.r.circle( x, y, rad ).attr( { fill: "white", stroke: color , 'stroke-width': 4 } ),
-			hit = MM.r.circle( x, y, rad * 2 ).attr({stroke: "none", fill: "transparent" });
+			c = MM.r.circle( x, y, rad ).attr( { fill: "white", stroke: color , 'stroke-width': 3} ),
+			hit = MM.r.circle( x, y, rad + 5 ).attr({stroke: "none", fill: "transparent" });
 		
 		cs.push(c, hit);
 		
@@ -606,6 +608,8 @@ MM.end = function(el, name, overview, next, links, stat1, stat2, image) {
 	MM.bg("/photos/misc/intro.jpg");
 	
 	//-- update content
+	var endClass = "end-" + names[0].toLowerCase() + "-" + names[1].toLowerCase();
+	$image.parent().removeClass().addClass(endClass);
 	$name.html("<span class='first'>"+names[0]+"</span><span class='second'>"+names[1]+"</span>");
 	$overview.html(overview);
 	$next.html(next);
@@ -623,7 +627,7 @@ MM.end = function(el, name, overview, next, links, stat1, stat2, image) {
 	$stat2.append("<h2>"+stat2[1]+"</h2>");
 	$stat2.append("<h3>"+stat2[0]+"</h3>");
 	
-	if(image) {
+	if (image) {
 		$image.attr("src", image);
 	}
 	
@@ -926,23 +930,19 @@ MM.start = function() {
 		//-- events
 		
 		MM.$tip.find("#tip-close").on("click", function(){
-			MM.$tip.hide();
-			MM.pause(MM.traveling);
-			if(MM.stop_that_is_on) {
-				MM.stop_that_is_on.attr( { fill: "white" } );
-			}
+			MM.$tip.fadeOut(100);
 		});
 		
 		MM.$end.find("#end-close").on("click", function(){
-			
-			MM.stop(MM.traveling);
-			
-			MM.$end.fadeOut();
-			$("#end-arrow").fadeOut();
-			
-			if(MM.stop_that_is_on) {
-				MM.stop_that_is_on.attr( { fill: "white" } );
-			}
+			MM.$end.fadeOut(100);
+			$("#end-arrow").fadeOut(100);
+		});
+		
+		$(document).on("keyup", function(e) {
+		    if(e.which == 27) {
+		    	$("#tip-close").trigger("click");
+		    	$("#end-close").trigger("click");
+		    }
 		});
 		
 }
