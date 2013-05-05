@@ -258,10 +258,12 @@ MM.plot = function(v, start_year, pxStep) {
 			var px = prev.point.x;
 			//console.log(prev)
 
+/*
 			if(left - px < 8) {
 				left = px + 14;
 				inter = Raphael.pathIntersection("M"+left+",0 L"+left+","+MM.height, path)
 			}
+*/
 		}
 				
 		if(!inter[0]) { 
@@ -386,8 +388,8 @@ MM.drawRoute = function(v) {
 	function makeCircle(x, y, onhover) {
 		var t, lock,
 		    cs = MM.r.set(),
-			c = MM.r.circle( x, y, 7 ).attr( { fill: "white", stroke: color , 'stroke-width': 4 } ),
-			hit = MM.r.circle( x, y, 14 ).attr({stroke: "none", fill: "transparent" });
+			c = MM.r.circle( x, y, 7 ).attr( { fill: "white", stroke: color , 'stroke-width': 3} ),
+			hit = MM.r.circle( x, y, 12 ).attr({stroke: "none", fill: "transparent" });
 		
 		cs.push(c, hit);
 		
@@ -863,14 +865,19 @@ MM.start = function() {
 		//-- events
 		
 		MM.$tip.find("#tip-close").on("click", function(){
-			MM.$tip.hide();
+			MM.$tip.fadeOut(100);
 		});
 		
 		MM.$end.find("#end-close").on("click", function(){
-			
-			MM.$end.fadeOut();
-			$("#end-arrow").fadeOut();
-			
+			MM.$end.fadeOut(100);
+			$("#end-arrow").fadeOut(100);
+		});
+		
+		$(document).on("keyup", function(e) {
+		    if(e.which == 27) {
+		    	$("#tip-close").trigger("click");
+		    	$("#end-close").trigger("click");
+		    }
 		});
 		
 }
