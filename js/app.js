@@ -605,7 +605,7 @@ MM.end = function(el, name, overview, next, links, stat1, stat2, image) {
 	
 	MM.$tip.hide();
 	
-	MM.bg("/photos/misc/intro.jpg");
+	MM.bg("photos/misc/intro.jpg");
 	
 	//-- update content
 	var endClass = "end-" + names[0].toLowerCase() + "-" + names[1].toLowerCase();
@@ -863,7 +863,7 @@ MM.start = function() {
 		hleft = $holder.offset().left + 24,
 		hright = hleft + $holder.width() - 24;
 		
-		MM.bg("/photos/misc/intro.jpg");
+		MM.bg("photos/misc/intro.jpg");
 		
 		$shape.addClass("show");
 		$intro.addClass("show");
