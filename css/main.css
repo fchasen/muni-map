@@ -94,7 +94,7 @@ p {
   font-size: 100px;
   font-weight: 300;
   letter-spacing: 2px;
-  line-height: 1;
+  line-height: .875;
   position: absolute;
   top: 80px;
   left: 50px;
@@ -111,7 +111,7 @@ p {
   font-weight: 300;
   position: absolute;
   top: 300px;
-  left: 118px;
+  left: 107px;
   margin: 0;
   color: #aaa;
   font-size: 40px;
@@ -768,6 +768,8 @@ p {
   
   #titlecard h2 {
     font-size: 36px;
+    left: 50px;
+    top: 250px;
   }
 
 }

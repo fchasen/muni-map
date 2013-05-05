@@ -46,11 +46,11 @@ MM.init = function(el, events, fleet, ends) {
 MM.timeline = function($el, num_ticks) {
 	var num_ticks = num_ticks || 3,
 		start_year = MM.events[0].y, //-- First event
-		end_year = MM.events[MM.events.length-1].y, //-- Last event
+		end_year = MM.events[MM.events.length-1].y + 1, //-- Last event
 		timeSpan = end_year - start_year,
 		timeStep = timeSpan / (num_ticks-2),
 		offset = 0, //- offset
-		halfw = 8,
+		halfw = 10,
 		pxStep = Math.floor((MM.width - offset ) / num_ticks),
 		ticks = [], //-- pixel change per year,
 		needsEnd = true; 
@@ -243,7 +243,7 @@ MM.map = function(fleet) {
 	var routes = {},
 		num_events = MM.events.length,
 		start_year = MM.events[0].y, //-- First event
-		end_year = MM.events[num_events-1].y, //-- Last event
+		end_year = MM.events[num_events-1].y + 1, //-- Last event
 		timeSpan = end_year - start_year,
 		right = 0, //- offset
 		pxStep = Math.floor((MM.width - right ) / timeSpan); //-- pixel change per year
@@ -332,12 +332,12 @@ MM.plot = function(v, start_year, pxStep) {
 			var px = prev.point.x;
 			//console.log(prev)
 
-
-			if(left - px < 8) {
-				//console.log(left,  px, left -px)
-
-				left = px + 14;
+			if(left - px <= pxStep + 2) {
+				//console.log(left,  px, left -px, pxStep)
+				
+				left = px + pxStep * 2;
 				inter = Raphael.pathIntersection("M"+left+",0 L"+left+","+MM.height, path)
+				
 			}
 
 		}
@@ -923,7 +923,7 @@ MM.start = function() {
 		$document = $(document),
 		hleft = $holder.offset().left + 24,
 		hright = hleft + $holder.width() - 24;
-		
+
 		MM.bg("photos/misc/intro.jpg");
 		
 		$shape.addClass("show");
@@ -962,6 +962,10 @@ MM.start = function() {
 					//$source.fadeIn();
 					
 					$follower.show();
+					
+					hleft = $holder.offset().left + 24;
+					hright = hleft + $holder.width() - 24;
+					
 					$document.on("mousemove", function(e) {
 						var left = e.clientX;
 						//console.log(hleft, hright)
