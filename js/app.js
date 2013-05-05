@@ -125,7 +125,8 @@ MM.distributeEvents = function(events) {
 	});
 	
 	//-- Sort events by year
-	events = cleaned.sort(MM.compare);
+	//events = cleaned.sort(MM.compare);
+	events = cleaned;
 	
 	MM.end_year = 2020;//events[events.length-1].y;
 	
@@ -164,7 +165,7 @@ MM.distributeEvents = function(events) {
 			"stat1" : e.stat1.split(':'),
 			"stat2" : e.stat2.split(':'),
 			"img" : route.img,
-			"dt" : new Date(MM.end_year)
+			"dt" : Date.now()
 		});			
 		
 	}
@@ -173,14 +174,61 @@ MM.distributeEvents = function(events) {
 		var route = MM.fleet[v];
 
 		route.events = route.events.sort(MM.compare);
-	
+		//console.log(route.events)
 	}
 	
 	return events;
 }
 
+MM.monthToInt = function(m) {
+	switch(m.toLowerCase()) {
+		case "jan":
+			return 1;
+		case "feb":
+			return 2;
+		case "mar":
+			return 3;
+		case "apr":
+			return 4;
+		case "may":
+			return 5;
+		case "jun":
+			return 6;
+		case "jul":
+			return 7;
+		case "aug":
+			return 8;
+		case "sep":
+			return 9;
+		case "oct":
+			return 10;
+		case "nov":
+			return 11;
+		case "dec":
+			return 12;
+	}
+}
 
 MM.compare = function(a,b) {
+  if (a.y < b.y)
+	 return -1;
+  if (a.y > b.y)
+	return 1;
+  if (a.y == b.y) {
+	  
+	  if (MM.monthToInt(a.m) < MM.monthToInt(b.m))
+	  	 //console.log(0, a.m, MM.monthToInt(a.m), b.m, MM.monthToInt(b.m))
+	  	 return -1;
+	  if (MM.monthToInt(b.m) > MM.monthToInt(b.m))
+	  	//console.log(1, a, b)
+	  	return 1;
+  }
+  	
+
+  return 0;
+}
+
+MM.compareDates = function(a,b) {
   if (a.dt < b.dt)
 	 return -1;
   if (a.dt > b.dt)
@@ -279,13 +327,15 @@ MM.plot = function(v, start_year, pxStep) {
 			prev = (i-1) >= 0 ? route.events[i-1] : false,
 			twists = ["M"],
 			point;
-		
+			
 		if(prev) {
 			var px = prev.point.x;
 			//console.log(prev)
 
 
 			if(left - px < 8) {
+				//console.log(left,  px, left -px)
+
 				left = px + 14;
 				inter = Raphael.pathIntersection("M"+left+",0 L"+left+","+MM.height, path)
 			}
@@ -294,8 +344,8 @@ MM.plot = function(v, start_year, pxStep) {
 		
 		
 
-		if(!inter.length) { 
-			//console.log("No Intersection", v, e.y, left, path); 
+		if(!inter[inter.length-1]) { 
+			//console.log("No Intersection", v, e.y, left); 
 			if(left <= path[1]) { 
 				top = path[2];
 			}else if(left >= path[path.length - 2]) {
