@@ -17,6 +17,7 @@ MM.init = function(el, events, fleet, ends) {
 	if(MM.elHeight < MM.height) {
 		MM.height = MM.elHeight;
 		MM.width = Math.round(MM.height * 4 / 3);
+		MM.$el.width(MM.width);
 	}
 	
 	MM.events = events;
@@ -58,8 +59,8 @@ MM.timeline = function($el, num_ticks) {
 		timeSpan = end_year - start_year,
 		timeStep = timeSpan / (num_ticks-2),
 		offset = 0, //- offset
-		halfw = 10,
-		pxStep = Math.floor((MM.width - offset ) / num_ticks),
+		halfw = 12,
+		pxStep = Math.floor(MM.width / num_ticks),
 		ticks = [], //-- pixel change per year,
 		needsEnd = true; 
 	
@@ -71,8 +72,8 @@ MM.timeline = function($el, num_ticks) {
 	for ( var i = 1; i <= num_ticks-2; i++ ) {
 		var y = Math.round(start_year + timeStep * i),
 			tick = $("<li>"+y+"</li>");
-		
-			tick.css("left", offset + (pxStep * i) - (halfw * i));
+
+			tick.css("left", offset + (pxStep * i) - (halfw * (i + 1)));
 			ticks.push(tick);
 			
 		if(y != end_year){
@@ -963,8 +964,8 @@ MM.start = function() {
 			$menu.addClass("show");
 			$timeline.addClass("show");
 			
-			$byline.delay(40).fadeOut(200);
-			$credit.delay(20).fadeOut(200);
+			$credit.hide();
+			$byline.hide();
 			
 			//$bg.css("background-color", "#eee");
 			
