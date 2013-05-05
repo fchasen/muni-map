@@ -11,7 +11,7 @@ MM.init = function(el, events, fleet, ends) {
 	
 	MM.width = MM.$el.width();
 	//MM.height = MM.$el.height();
-	MM.height = MM.width * 2 / 3;
+	MM.height = MM.width * 3 / 4;
 	
 	
 	MM.events = events;
