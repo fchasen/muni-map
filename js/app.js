@@ -119,6 +119,8 @@ MM.distributeEvents = function(events) {
 			item.date = item.y;
 		}
 		
+		item.dt = new Date(item.date);
+		
 		cleaned.push(item);
 	});
 	
@@ -139,7 +141,8 @@ MM.distributeEvents = function(events) {
 				"desc" : e.desc,
 				"img" : e.img,
 				"source" : e.source,
-				"date" : e.date
+				"date" : e.date,
+				"dt" : e.dt
 			});
 		});
 		
@@ -160,9 +163,17 @@ MM.distributeEvents = function(events) {
 			"links" : e.links.split(','),
 			"stat1" : e.stat1.split(':'),
 			"stat2" : e.stat2.split(':'),
-			"img" : route.img
+			"img" : route.img,
+			"dt" : new Date(MM.end_year)
 		});			
 		
+	}
+	
+	for (var v in MM.fleet) {
+		var route = MM.fleet[v];
+
+		route.events = route.events.sort(MM.compare);
+	
 	}
 	
 	return events;
@@ -170,9 +181,9 @@ MM.distributeEvents = function(events) {
 
 
 MM.compare = function(a,b) {
-  if (a.y < b.y)
+  if (a.dt < b.dt)
 	 return -1;
-  if (a.y > b.y)
+  if (a.dt > b.dt)
 	return 1;
   return 0;
 }
@@ -605,7 +616,7 @@ MM.end = function(el, name, overview, next, links, stat1, stat2, image) {
 	
 	MM.$tip.hide();
 	
-	MM.bg("/photos/misc/intro.jpg");
+	MM.bg("photos/misc/intro.jpg");
 	
 	//-- update content
 	var endClass = "end-" + names[0].toLowerCase() + "-" + names[1].toLowerCase();
@@ -863,7 +874,7 @@ MM.start = function() {
 		hleft = $holder.offset().left + 24,
 		hright = hleft + $holder.width() - 24;
 		
-		MM.bg("/photos/misc/intro.jpg");
+		MM.bg("photos/misc/intro.jpg");
 		
 		$shape.addClass("show");
 		$intro.addClass("show");
