@@ -556,6 +556,8 @@ MM.end = function(el, name, overview, next, links, stat1, stat2, image) {
 	MM.$tip.hide();
 	
 	//-- update content
+	var endClass = "end-" + names[0].toLowerCase() + "-" + names[1].toLowerCase();
+	$image.parent().removeClass().addClass(endClass);
 	$name.html("<span class='first'>"+names[0]+"</span><span class='second'>"+names[1]+"</span>");
 	$overview.html(overview);
 	$next.html(next);
@@ -573,7 +575,7 @@ MM.end = function(el, name, overview, next, links, stat1, stat2, image) {
 	$stat2.append("<h2>"+stat2[1]+"</h2>");
 	$stat2.append("<h3>"+stat2[0]+"</h3>");
 	
-	if(image) {
+	if (image) {
 		$image.attr("src", image);
 	}
 	
