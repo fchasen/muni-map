@@ -431,7 +431,7 @@ p {
 
 #end-image {
 	float: right;
-	margin: 50px 0 0 0;
+	margin: 50px 20px 0 0;
 }
 
 #end h2 {
@@ -444,6 +444,7 @@ p {
 #end h3 {
   font-family: 'Unna', serif;
   font-size: 28px;
+  font-weight: normal;
   margin: 0 0 10px 0;
 }
 
@@ -458,6 +459,7 @@ p {
 
 #end-overview {
   	font-size: 18px;
+  	font-weight: 300;
   	line-height: 24px;
 	margin: 0 0 20px 0;
 }
@@ -467,7 +469,8 @@ p {
 }
 #end-next {
   	font-size: 18px;
-  	line-height: 24px;
+   	font-weight: 300;
+ 	line-height: 24px;
 }
 
 #end-stat1 h3,
