@@ -4,6 +4,7 @@ html {
 
 body {
   min-width: 1020px;
+  font-family: 'Signika Negative', sans-serif;
 }
 
 p {
@@ -160,10 +161,11 @@ svg {
 	line-height: 1.35;
 	text-transform: uppercase;
 	position: absolute;
-	right: 120px;
+	right: 140px;
 	bottom: 50px;
 	color: #fff;
 	display: none;
+	width: 380px;
 }
 
 #byline a {
@@ -508,7 +510,7 @@ svg {
   background: url(../img/tip-close-l.png) 0 0 no-repeat;
   position: absolute;
   top: 10px;
-  right: 15px;
+  right: 10px;
   font-size: 12px;
   cursor: pointer;
   width: 40px;
@@ -641,7 +643,11 @@ svg {
 #credits a {
   display: block;
   color: #fff;
-  margin: 5px;
+  margin: 0 0 8px 0;
+}
+
+#credits a:hover {
+  text-decoration:none;
 }
 
 /* http://davidwalsh.name/css-tooltips */
