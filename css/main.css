@@ -214,7 +214,18 @@ svg {
   -moz-transform: translate(600px, 0);
 }
 
-.show #start {
+#loading {
+  font-family: 'Signika Negative', sans-serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-size: 18px;
+  margin: 0 0 40px 0;
+  color: #fff;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+#start.show {
     -webkit-transform: translate(0, 0);
     -moz-transform: translate(0, 0);
     background: #070707;
