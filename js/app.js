@@ -14,6 +14,8 @@ MM.init = function(el, events, fleet, ends) {
 		MM.photos = 'http://sf-transit.s3.amazonaws.com/';
 	}
 	
+	MM.bg(MM.photos + "photos/misc/intro.jpg");
+	
 	MM.width = MM.$el.width();
 	//MM.height = MM.$el.height();
 	MM.height = Math.round(MM.width * 3 / 4);
@@ -163,6 +165,10 @@ MM.distributeEvents = function(events) {
 				"date" : e.date,
 				"dt" : e.dt
 			});
+			
+			MM.fleet[v].photos.push(e.img);
+			
+			
 		});
 		
 	});
@@ -948,13 +954,11 @@ MM.start = function() {
 		hright = hleft + $holder.width() - 24,
 		showCredits;
 
-		MM.bg(MM.photos + "photos/misc/intro.jpg");
-		
-		MM.preloadImages(MM.images);
 		
 		$shape.addClass("show");
 		$intro.addClass("show");
 		$title.addClass("show");
+		$s.addClass("show");
 		
 		showCredits = setTimeout(function(){
 			$byline.fadeIn(400);
@@ -1067,6 +1071,8 @@ MM.start = function() {
 }
 
 MM.menu = function($el) {
+	MM.allLoaded = {};
+	
 	for (var v in MM.fleet) {
 		var id = v.replace(' ', '_'),
 			$b = $("<li id='toggle-"+id+"' style='background-color: "+MM.fleet[v].color+"' data-v='"+v+"' class='off'><a href='#"+id+"'  class='toggle' >"+v+"</a><a href='#"+id+"' class='travel play'></a></li>"),
@@ -1088,6 +1094,14 @@ MM.menu = function($el) {
 
 			MM.toggleRoute(name);
 			
+			if(typeof(MM.allLoaded[name]) == "undefined"){
+				MM.allLoaded[name] = false; 
+				MM.loadPhotos(name, function(){
+					MM.allLoaded[name] = true; 
+					//console.log("loaded:", name)
+				});
+			}
+
 			
 			if($p.hasClass("off")) {
 				$p.removeClass("off");
@@ -1165,15 +1179,44 @@ MM.findById = function(source, id) {
 MM.preloadImages = function(imgs, callback) {
 		// set defaults
 		var imgs = (typeof imgs == 'string') ? [imgs] : imgs || [];
+		var count = 0;
+		var total = imgs.length;
 		var callback = callback || function(){};
+
+		var c = function(){
+			count++;
+			if(count == total) callback();
+		}
 
 		// iterate through each image
 		$.each(imgs, function(i, img){
 			// create image and call callback on load
 			
 			//var img = $('<img />').load(callback).attr('src', img).get(0);
-			$('<img />').load(callback).attr('src', img)
+			$('<img />').load(c).attr('src', img)
 			//cache.push(img);
 		});
 	
 };
+
+MM.loadPhotos = function(v, callback) {
+	var photos = MM.fleet[v].photos,
+		chunk = 3,
+		end = photos.length,
+		callback = callback || function(){},
+		loader = function(start) {
+			var slice = photos.slice(start, start+chunk);
+			MM.preloadImages(slice, function(){
+				start += chunk;
+				//console.log("loading:", start)
+				if(start < end){
+					loader(start);
+				}else{
+					callback();
+				}
+				
+			});
+		};
+		
+		loader(0);
+}

@@ -4,6 +4,7 @@ var fleet = {
 		"color" : "#80480c",
 		"img" : "img/icon-cablecar.png",
 		"events" : [],
+		"photos" : [],
 		"rpath" : [
 			[1873, 62],
 			[1897, 62],
@@ -22,6 +23,7 @@ var fleet = {
 		"color" : "#c23827",
 		"img" : "img/icon-streetcar.png",
 		"events" : [],
+		"photos" : [],
 		"rpath" : [
 			[1888, 72],
 			[1988, 72],
@@ -35,6 +37,7 @@ var fleet = {
 		"color" : "#65447f",
 		"img" : "img/icon-motorbus.png",
 		"events" : [],
+		"photos" : [],
 		"rpath" : [
 			[1917, 86.5],
 			[1940, 64.5],
@@ -50,6 +53,7 @@ var fleet = {
 		"color" : "#6c9c20",
 		"img" : "img/icon-trolleybus.png",
 		"events" : [],
+		"photos" : [],
 		"rpath" : [
 			[1932, 70],
 			[1935, 70],
@@ -65,6 +69,7 @@ var fleet = {
 		"color" : "#d8a028",
 		"img" : "img/icon-lightrail.png",
 		"events" : [],
+		"photos" : [],
 		"rpath" : [
 			[1972, 72],
 			[1981, 63],
@@ -78,6 +83,7 @@ var fleet = {
 		"color" : "#247ba8",
 		"img" : "img/icon-heavyrail.png",
 		"events" : [],
+		"photos" : [],
 		"rpath" : [
 			[1957, 9],
 			[1987, 37],
