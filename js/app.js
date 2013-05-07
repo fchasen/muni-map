@@ -47,7 +47,7 @@ MM.init = function(el, events, fleet, ends) {
 	MM.menu($("#menu"));
 	
 	
-	MM.preloadImages(MM.images);
+	
 	
 	
 }
@@ -943,6 +943,8 @@ MM.start = function() {
 		hright = hleft + $holder.width() - 24;
 
 		MM.bg("photos/misc/intro.jpg");
+		
+		MM.preloadImages(MM.images);
 		
 		$shape.addClass("show");
 		$intro.addClass("show");
