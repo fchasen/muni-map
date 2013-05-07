@@ -394,7 +394,7 @@ svg {
 #end {
   background: url('../img/end-bg.png');
   font-family: 'Signika Negative', sans-serif;
-  position: fixed;
+  position: absolute;
   left: 0;
   top: 0;
   width: 91%;
@@ -818,5 +818,8 @@ svg {
     left: 50px;
     top: 250px;
   }
-
+  
+  #end-name {
+    font-size: 122px;
+  }
 }
