@@ -231,7 +231,7 @@ svg {
     background: #070707;
 }
 
-.closed #start {
+#start.closed {
   -webkit-transition: -webkit-transform .5s 0;
   -moz-transition: -moz-transform .5s 0;
 }
