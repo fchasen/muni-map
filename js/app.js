@@ -970,8 +970,9 @@ MM.start = function() {
 			$intro.removeClass("show");
 			$title.removeClass("show");
 			$shape.removeClass("show");
+			$s.removeClass("show");
 			
-			
+			$s.addClass("closed");
 			$intro.addClass("closed");
 			$title.addClass("closed");
 			$shape.addClass("closed");
