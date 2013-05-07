@@ -8,6 +8,11 @@ MM.init = function(el, events, fleet, ends) {
 	//-- expects a element it
 	MM.$el = $("#"+el);
 	
+	if(!window.location && window.location.hostname){
+		MM.photos = '';
+	}else{
+		MM.photos = 'http://sf-transit.s3.amazonaws.com/';
+	}
 	
 	MM.width = MM.$el.width();
 	//MM.height = MM.$el.height();
@@ -117,7 +122,7 @@ MM.distributeEvents = function(events) {
 			"d" : e["Day"],
 			"v" : strim(e["Type of Vehicle"]),
 			"desc" : e["Event Description"],
-			"img" : "photos/" + e["Image"],
+			"img" : MM.photos + "photos/" + e["Image"],
 			"source" : e["Source"]
 		}
 		
@@ -681,7 +686,7 @@ MM.end = function(el, name, overview, next, links, stat1, stat2, image) {
 	
 	MM.$tip.hide();
 	
-	MM.bg("photos/misc/intro.jpg");
+	MM.bg(MM.photos + "photos/misc/intro.jpg");
 	
 	//-- update content
 	var endClass = "end-" + names[0].toLowerCase() + "-" + names[1].toLowerCase();
@@ -940,9 +945,10 @@ MM.start = function() {
 		$byline = $("#byline"),
 		$document = $(document),
 		hleft = $holder.offset().left + 24,
-		hright = hleft + $holder.width() - 24;
+		hright = hleft + $holder.width() - 24,
+		showCredits;
 
-		MM.bg("photos/misc/intro.jpg");
+		MM.bg(MM.photos + "photos/misc/intro.jpg");
 		
 		MM.preloadImages(MM.images);
 		
@@ -950,8 +956,11 @@ MM.start = function() {
 		$intro.addClass("show");
 		$title.addClass("show");
 		
-		$byline.delay(4000).fadeIn(400);
-		$credit.delay(4400).fadeIn(400);
+		showCredits = setTimeout(function(){
+			$byline.fadeIn(400);
+			$credit.fadeIn(400);
+		}, 4000);
+		
 		
 		$s.on("click", function(e) {
 			$intro.removeClass("show");
@@ -970,6 +979,7 @@ MM.start = function() {
 			$byline.hide();
 			
 			//$bg.css("background-color", "#eee");
+			clearTimeout(showCredits);
 			
 			var f = $menu.find("li")[0];
 			//$(f).trigger("click");
