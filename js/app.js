@@ -631,14 +631,14 @@ MM.tip = function(el, title, type, desc) {
 	top = rect.top - scroll;
 	
 	
-	if(rect.left > wwidth - popWidth ){
+	if(rect.left > wwidth - popWidth - 50 ){
 		MM.$tip.addClass("left");
 		left = left - MM.$tip.width();
 	}else{
 		MM.$tip.removeClass("left");
 	} 
 	
-	if(rect.top > wheight - MM.$tip.height() ){
+	if(rect.top > wheight - MM.$tip.height() - 60 ){
 		MM.$tip.addClass("above");
 		top = top - MM.$tip.height();
 	}else{
@@ -772,7 +772,7 @@ MM.travel = function(line, startat) {
 		config = { stroke: 'white', fill: 'none', 'fill-opacity': 0, 'stroke-width': 3},
 		plen = route.events.length - 1,
 		cur = startat || 0,
-		delay = 4500,
+		delay = 5500,
 		st;
 		
 	if(!MM.travelLines[line]){
