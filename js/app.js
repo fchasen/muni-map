@@ -781,7 +781,9 @@ MM.travel = function(line, startat) {
 		st = MM.travelLines[line];
 	}
 	
-	MM.pause(MM.traveling);
+	if(MM.traveling && MM.traveling != line){
+		MM.pause(MM.traveling);
+	}
 	
 	MM.traveling = line;
 	
@@ -830,14 +832,16 @@ MM.pause = function(line) {
 	//MM.traveling = false;
 	clearInterval(MM.interval_id);
 	
-	MM.$tip.hide();
+	//MM.$tip.hide();
 }
 
 MM.resume = function(line) {
 		var pausedat = MM.paused[line];
 		var config = { stroke: 'white', fill: 'none', 'fill-opacity': 0, 'stroke-width': 3};
 		
-		if(MM.traveling) MM.pause(MM.traveling);
+		if(MM.traveling && MM.traveling != line){
+			MM.pause(MM.traveling);
+		}
 		
 		var p = MM.drawpath( MM.r, MM.fleet[line].events[pausedat].slice, 150, config, function(){
 				MM.travel(line, MM.paused[line]);
@@ -1137,12 +1141,11 @@ MM.menu = function($el) {
 
 			} else if($this.hasClass("pause")){
 				MM.pause(name);
-				
 				$this.removeClass("pause");
 				$this.addClass("play");
 				
 			} else if($this.hasClass("play")){
-				
+
 				MM.resume(name);
 				
 				//$(".pause").removeClass("pause").addClass("play");
