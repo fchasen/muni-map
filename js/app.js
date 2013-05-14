@@ -871,7 +871,8 @@ MM.stop = function(line) {
 MM.showStation = function(v, station) {
 	var e = MM.fleet[v].events[station],
 		s = MM.fleet[v].stops[station],
-		$src = $("#source");
+		$src = $("#source"),
+		$el;
 	
 	if(!e.end) {
 					
@@ -888,7 +889,10 @@ MM.showStation = function(v, station) {
 	}else{
 			
 		MM.end(s[0], e.name, e.overview, e.next, e.links, e.stat1, e.stat2, e.img);
-					
+		$el = $("#toggle-"+(v.replace(" ", "_"))).find(".travel");
+
+		$el.removeClass("pause");
+		$el.addClass("play");	
 	}
 }
 
