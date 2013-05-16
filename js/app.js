@@ -772,7 +772,7 @@ MM.travel = function(line, startat) {
 		config = { stroke: 'white', fill: 'none', 'fill-opacity': 0, 'stroke-width': 3},
 		plen = route.events.length - 1,
 		cur = startat || 0,
-		delay = 5500,
+		delay = 6200,
 		st;
 		
 	if(!MM.travelLines[line]){
